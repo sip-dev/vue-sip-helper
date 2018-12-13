@@ -47,11 +47,11 @@
       },
       {
         "command": "vuesiphelper.sipgenerate",
-        "title": "ng-sip-generate"
+        "title": "vue-sip-generate"
       },
       {
         "command": "vuesiphelper.component.switchfile",
-        "title": "ng-sip-switchfile"
+        "title": "vue-sip-switchfile"
       }
     ],
     "keybindings": [
