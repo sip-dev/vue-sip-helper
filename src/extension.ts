@@ -393,14 +393,16 @@ export function activate(context: ExtensionContext) {
         }
     };
 
+    let configFile = './vue-sip-helper.config.json';
+
     let getConfig = (): IConfig => {
-        let fsPath = path.join(_getRootPath(), './ng-sip-helper.config.json');
+        let fsPath = path.join(_getRootPath(), configFile);
         let fsDefaultConfig = fs.readFileSync(path.join(context.extensionPath, 'default.config.json'), 'utf-8');
         return (!fs.existsSync(fsPath)) ? jsonic(fsDefaultConfig) : jsonic(fs.readFileSync(fsPath, 'utf-8'));
     };
 
     let setConfig = () => {
-        let fsPath = path.join(_getRootPath(), './ng-sip-helper.config.json');
+        let fsPath = path.join(_getRootPath(), configFile);
         if (!fs.existsSync(fsPath))
             saveDefaultConfig();
 
@@ -412,7 +414,7 @@ export function activate(context: ExtensionContext) {
     };
 
     let saveDefaultConfig = () => {
-        let fsPath = path.join(_getRootPath(), './ng-sip-helper.config.json');
+        let fsPath = path.join(_getRootPath(), configFile);
         let fsDefaultConfig = fs.readFileSync(path.join(context.extensionPath, 'default.config.json'), 'utf-8');
         fs.writeFileSync(fsPath, fsDefaultConfig, 'utf-8');
     };
@@ -420,7 +422,7 @@ export function activate(context: ExtensionContext) {
     let saveConfigTmpls = (templates: any[]) => {
         let config = getConfig();
         config.templates = templates;
-        let fsPath = path.join(_getRootPath(), './ng-sip-helper.config.json');
+        let fsPath = path.join(_getRootPath(), configFile);
         fs.writeFileSync(fsPath, stringify(config, { space: '    ' }), 'utf-8');
     };
 
