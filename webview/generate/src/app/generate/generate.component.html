@@ -93,6 +93,9 @@
                 <li class="nav-item" *ngIf="curFile.typeInfo.style">
                     <a class="nav-link" [class.active]="editContentType == 4" (click)="editContentType = 4" href="javascript:void(0)">{{curFile.typeInfo.styleType}}</a>
                 </li>
+                <li class="nav-item" *ngIf="curFile.typeInfo.extend">
+                    <a class="nav-link" [class.active]="editContentType == 5" (click)="editContentType = 5" href="javascript:void(0)">内容</a>
+                </li>
             </ul>
             <div class="card-body" style="padding-top: 4px;">
                 <form>
@@ -100,6 +103,10 @@
                         <div class="form-group">
                             <label class="col-form-label">fileName：</label>
                             <input type="input" class="form-control" name="fileName" [(ngModel)]="curFile.fileName">
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label">extend：</label>
+                            <input type="input" class="form-control" name="extend" [(ngModel)]="curFile.extend">
                         </div>
                         <div class="form-group">
                             <label class="col-form-label">path：</label>
@@ -193,7 +200,11 @@
                             <textarea class="form-control" rows="25" name="filestylecontent" [(ngModel)]="curFile.styleContent"></textarea>
                         </div>
                     </div>
-
+                    <div *ngIf="editContentType == 5">
+                        <div class="form-group">
+                            <textarea class="form-control" rows="25" name="fileextendcontent" [(ngModel)]="curFile.extendContent"></textarea>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

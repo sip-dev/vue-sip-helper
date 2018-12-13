@@ -13,10 +13,12 @@ export interface IFileItem {
     specContent?: string;
     htmlContent?: string;
     styleContent?: string;
+    extend?:string;
+    extendContent?:string;
 }
 
 export interface IGenTypeInfo {
-    ts: boolean;
+    ts?: boolean;
     html?: boolean;
     style?: boolean;
     styleType?: string;
@@ -28,29 +30,34 @@ export interface IGenTypeInfo {
     moduleDeclaration?: boolean;
     moduleEntryComponent?: boolean;
     moduleProvider?: boolean;
+    extend?:boolean;
 }
 
 export interface IGenType {
     [key: string]: IGenTypeInfo;
 }
 
+// export const TYPES: IGenType = {
+//     'module': {
+//         ts: true, spec: true, importToModue: true, importToRouting: true,
+//         moduleExport: true, moduleImport: true
+//     },
+//     'component': {
+//         ts: true, html: true, style: true, styleType: "less", spec: true,
+//         importToModue: true, importToRouting: true,
+//         moduleDeclaration: true, moduleEntryComponent: true, moduleExport: true
+//     },
+//     'service': { ts: true, spec: true, importToModue: true, moduleProvider: true },
+//     'directive': { ts: true, spec: true, importToModue: true, moduleDeclaration: true, moduleExport: true },
+//     'pipe': { ts: true, spec: true, importToModue: true, moduleDeclaration: true, moduleExport: true },
+//     'class': { ts: true, spec: true },
+//     'guard': { ts: true, spec: true, importToModue: true, moduleProvider: true, moduleExport: true },
+//     'interface': { ts: true },
+//     'enum': { ts: true }
+// };
+
 export const TYPES: IGenType = {
-    'module': {
-        ts: true, spec: true, importToModue: true, importToRouting: true,
-        moduleExport: true, moduleImport: true
-    },
-    'component': {
-        ts: true, html: true, style: true, styleType: "less", spec: true,
-        importToModue: true, importToRouting: true,
-        moduleDeclaration: true, moduleEntryComponent: true, moduleExport: true
-    },
-    'service': { ts: true, spec: true, importToModue: true, moduleProvider: true },
-    'directive': { ts: true, spec: true, importToModue: true, moduleDeclaration: true, moduleExport: true },
-    'pipe': { ts: true, spec: true, importToModue: true, moduleDeclaration: true, moduleExport: true },
-    'class': { ts: true, spec: true },
-    'guard': { ts: true, spec: true, importToModue: true, moduleProvider: true, moduleExport: true },
-    'interface': { ts: true },
-    'enum': { ts: true }
+    'extend': { extend: true }
 };
 
 export const STYLES = ['css', 'less', 'sass'];
@@ -58,7 +65,7 @@ export const STYLES = ['css', 'less', 'sass'];
 export const VARS = [
     'input', 'prefix',
     'fileName', 'type', 'path', 'className', 'styleType', 'importToModue', 'importToRouting',
-    'curPath', 'curFile', 'workspaceRoot'
+    'curPath', 'curFile', 'workspaceRoot', 'extend'
 ];
 
 export function GetDefaultFile(): IFileItem {
@@ -95,6 +102,7 @@ export function GetFileFullName(file: IFileItem): string {
     let typeInfo = file.typeInfo;
     let exts = [];
     typeInfo.ts && exts.push('ts');
+    typeInfo.extend && exts.push(file.extend);
     typeInfo.spec && exts.push('spec');
     typeInfo.html && exts.push('html');
     typeInfo.style && exts.push(typeInfo.styleType);
@@ -110,6 +118,7 @@ export function GetFileFullNameList(file: IFileItem): string[] {
     let fileList: string[] = [];
     let fileName = GetVar(file, JoinPath(file.path, file.fileName));
     typeInfo.ts && fileList.push([fileName, 'ts'].join('.'));
+    typeInfo.extend && fileList.push([fileName, file.extend].join('.'));
     typeInfo.spec && fileList.push([fileName, 'spec'].join('.'));
     typeInfo.html && fileList.push([fileName, 'html'].join('.'));
     typeInfo.style && fileList.push([fileName, typeInfo.styleType || 'css'].join('.'));
@@ -135,6 +144,12 @@ export function GetFileFullList(file: IFileItem): { fileName: string, content: s
             importToRouting: file.importToRouting ? GetVar(file, file.importToRouting) : '',
             routePath: GetVar(file, '@{fileName}').split('.')[0],
             typeInfo: Object.assign({}, file.typeInfo)
+        });
+    }
+    if (typeInfo.extend){
+        fileList.push({
+            fileName: [fileName, file.extend].join('.'),
+            content: GetVar(file, file.extendContent)
         });
     }
     if (typeInfo.spec) {
@@ -267,10 +282,10 @@ export const DEFAULT_TMPLS: ITmplItem[] = [{
             "specContent": "import { @{className} } from './@{fileName}';\n\ndescribe('@{className}', () => {\n  it('should create an instance', () => {\n    expect(new @{className}()).toBeTruthy();\n  });\n});\n",
             "styleContent": "",
             "tsContent": "export class @{className} {\n}\n",
-            "type": "class",
+            "type": "extend",
+            "extend": "ts",
             "typeInfo": {
-                "spec": true,
-                "ts": true
+                "extend": true
             }
         }
     ],

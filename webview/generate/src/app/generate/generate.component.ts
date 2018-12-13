@@ -117,6 +117,9 @@ export class GenerateComponent implements OnDestroy {
       case 4:
         hasContentType = file.typeInfo.style;
         break;
+      case 5:
+        hasContentType = file.typeInfo.extend;
+        break;
     }
     if (!hasContentType) this.editContentType = 0;
     return this.genSrv.activeFile(file);
