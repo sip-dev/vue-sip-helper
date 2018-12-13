@@ -1,5 +1,5 @@
 {
-  "name": "ngsiphelper",
+  "name": "vuesiphelper",
   "displayName": "vue-sip-helper",
   "description": "Run vue-sip-helper from vscode commandline.",
   "icon": "images/logo.png",
@@ -15,7 +15,7 @@
     "url": "https://github.com/sip-dev/vue-sip-helper.git"
   },
   "categories": [
-    "Snippets",
+    "Vue",
     "Other"
   ],
   "engines": {
@@ -25,58 +25,48 @@
     "*"
   ],
   "keywords": [
-    "Angular",
-    "Angular 5",
-    "ng-sip",
+    "Vue",
+    "Vue 2",
+    "vue-sip",
     "TypeScript"
   ],
   "main": "./out/src/extension",
   "contributes": {
-    "snippets": [
-      {
-        "language": "html",
-        "path": "./snippets/html.json"
-      },
-      {
-        "language": "typescript",
-        "path": "./snippets/typescript.json"
-      }
-    ],
     "commands": [
       {
-        "command": "ngsiphelper.tosnippettext",
+        "command": "vuesiphelper.tosnippettext",
         "title": "To Snippet Text"
       },
       {
-        "command": "ngsiphelper.quickpicks",
+        "command": "vuesiphelper.quickpicks",
         "title": "vue-sip-helper"
       },
       {
-        "command": "ngsiphelper.region",
+        "command": "vuesiphelper.region",
         "title": "Region Block"
       },
       {
-        "command": "ngsiphelper.sipgenerate",
+        "command": "vuesiphelper.sipgenerate",
         "title": "ng-sip-generate"
       },
       {
-        "command": "ngsiphelper.component.switchfile",
+        "command": "vuesiphelper.component.switchfile",
         "title": "ng-sip-switchfile"
       }
     ],
     "keybindings": [
       {
-        "command": "ngsiphelper.quickpicks",
+        "command": "vuesiphelper.quickpicks",
         "key": "ctrl+k ctrl+h",
         "mac": "cmd+k cmd+h"
       },
       {
-        "command": "ngsiphelper.sipgenerate",
+        "command": "vuesiphelper.sipgenerate",
         "key": "ctrl+k ctrl+g",
         "mac": "cmd+k cmd+g"
       },
       {
-        "command": "ngsiphelper.component.switchfile",
+        "command": "vuesiphelper.component.switchfile",
         "key": "ctrl+k ctrl+k",
         "mac": "cmd+k cmd+k",
         "when": "editorTextFocus"
@@ -86,24 +76,24 @@
       "explorer/context": [
         {
           "when": "",
-          "command": "ngsiphelper.sipgenerate",
+          "command": "vuesiphelper.sipgenerate",
           "group": "vue-sip-helper"
         },
         {
           "when": "",
-          "command": "ngsiphelper.quickpicks",
+          "command": "vuesiphelper.quickpicks",
           "group": "vue-sip-helper"
         }
       ],
       "editor/context": [
         {
           "when": "",
-          "command": "ngsiphelper.sipgenerate",
+          "command": "vuesiphelper.sipgenerate",
           "group": "vue-sip-helper"
         },
         {
           "when": "",
-          "command": "ngsiphelper.quickpicks",
+          "command": "vuesiphelper.quickpicks",
           "group": "vue-sip-helper"
         }
       ]

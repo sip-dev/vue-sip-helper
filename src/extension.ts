@@ -69,7 +69,7 @@ export function activate(context: ExtensionContext) {
         if (!fs.existsSync(pathParent)) mkdirSync(pathParent);
         fs.mkdirSync(fsPath);
     };
-    context.subscriptions.push(commands.registerCommand('ngsiphelper.sipgenerate', (args) => {
+    context.subscriptions.push(commands.registerCommand('vuesiphelper.sipgenerate', (args) => {
         _preDoneRegisterCommand(args);
         let config = getConfig();
         let picks = config.templates.map(tmpl => tmpl.title);
@@ -90,11 +90,11 @@ export function activate(context: ExtensionContext) {
                 (error) => console.error(error));
         });
     }));
-    context.subscriptions.push(commands.registerCommand('ngsiphelper.sipgenerate.tmpl', (args) => {
+    context.subscriptions.push(commands.registerCommand('vuesiphelper.sipgenerate.tmpl', (args) => {
         _preDoneRegisterCommand(args);
         showSipGenerateUI(args);
     }));
-    context.subscriptions.push(commands.registerCommand('ngsiphelper.component.switchfile', (args) => {
+    context.subscriptions.push(commands.registerCommand('vuesiphelper.component.switchfile', (args) => {
         let curFile = getCurrentPath(args);
         let curPath = path.dirname(curFile);
         let curFileName = path.basename(curFile);
@@ -155,7 +155,7 @@ export function activate(context: ExtensionContext) {
     };
 
     let _fileName = '', _curFile = '';
-    context.subscriptions.push(commands.registerCommand('ngsiphelper.quickpicks', (args) => {
+    context.subscriptions.push(commands.registerCommand('vuesiphelper.quickpicks', (args) => {
         let curPath = _preDoneRegisterCommand(args);
 
         _calcRootPath(curPath);
@@ -216,22 +216,22 @@ export function activate(context: ExtensionContext) {
                 npm();
                 break;
             case 'snippet-text':
-                commands.executeCommand('ngsiphelper.tosnippettext', args);
+                commands.executeCommand('vuesiphelper.tosnippettext', args);
                 break;
             case 'json-class':
-                commands.executeCommand('ngsiphelper.jsontoclass', args);
+                commands.executeCommand('vuesiphelper.jsontoclass', args);
                 break;
             case 'json-interface':
-                commands.executeCommand('ngsiphelper.jsontointerface', args);
+                commands.executeCommand('vuesiphelper.jsontointerface', args);
                 break;
             case 'region':
-                commands.executeCommand('ngsiphelper.region', args);
+                commands.executeCommand('vuesiphelper.region', args);
                 break;
             case 'sip-generate':
-                commands.executeCommand('ngsiphelper.sipgenerate', args);
+                commands.executeCommand('vuesiphelper.sipgenerate', args);
                 break;
             case 'sip-generate-tmpl':
-                commands.executeCommand('ngsiphelper.sipgenerate.tmpl', args);
+                commands.executeCommand('vuesiphelper.sipgenerate.tmpl', args);
                 break;
             case 'sip-regmodlue':
                 sipRegmodlue(new SipRegModule(), gParam);
@@ -445,7 +445,7 @@ export function activate(context: ExtensionContext) {
         });
     };
 
-    context.subscriptions.push(commands.registerTextEditorCommand('ngsiphelper.tosnippettext', (textEditor, edit) => {
+    context.subscriptions.push(commands.registerTextEditorCommand('vuesiphelper.tosnippettext', (textEditor, edit) => {
         _calcRootPath(textEditor.document.fileName);
 
         var { document, selection } = textEditor
@@ -470,7 +470,7 @@ export function activate(context: ExtensionContext) {
         return text;
     };
 
-    context.subscriptions.push(commands.registerTextEditorCommand('ngsiphelper.jsontoclass', (textEditor, edit) => {
+    context.subscriptions.push(commands.registerTextEditorCommand('vuesiphelper.jsontoclass', (textEditor, edit) => {
         let fsFile: string = textEditor.document.fileName;
         _calcRootPath(fsFile);
 
@@ -534,7 +534,7 @@ ${props.join('\n')}
         return classText;
     };
 
-    context.subscriptions.push(commands.registerTextEditorCommand('ngsiphelper.jsontointerface', (textEditor, edit) => {
+    context.subscriptions.push(commands.registerTextEditorCommand('vuesiphelper.jsontointerface', (textEditor, edit) => {
         let fsFile: string = textEditor.document.fileName;
         _calcRootPath(fsFile);
 
@@ -593,7 +593,7 @@ ${props.join('\n')}
         return classText;
     };
 
-    context.subscriptions.push(commands.registerTextEditorCommand('ngsiphelper.region', (textEditor, edit) => {
+    context.subscriptions.push(commands.registerTextEditorCommand('vuesiphelper.region', (textEditor, edit) => {
         _calcRootPath(textEditor.document.fileName);
 
         var { document, selection } = textEditor
