@@ -1,0 +1,22 @@
+<div class="alert alert-info" role="alert" style="margin-top: 10px;">
+  当前路径：{{vscodeOptions.curPath}}
+  </div>
+  <div class="row">
+      <div class="col">
+          <div class="card">
+              <div class="card-header">
+                  日志
+              </div>
+              <div>
+                  <ul class="list-group list-group-flush">
+                      <li class="list-group-item" *ngFor="let item of genReports" [class.list-group-item-success]="(item||'').indexOf('成功')>=0"
+                          [class.list-group-item-danger]="(item||'').indexOf('成功')<0">{{item}}</li>
+                      <li class="list-group-item" *ngIf="generating == 2">
+                          生成完成！！
+                          <a class="card-link" href="javascript:void(0)" (click)="close()">完成</a>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+      </div>
+  </div>

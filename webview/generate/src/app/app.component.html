@@ -1,0 +1,17 @@
+<div class="container-fluid">
+    <!-- <div class="alert alert-info" role="alert" style="margin-top: 10px;">
+        当前路径：{{vscodeOptions.curPath}}
+        </div>
+  <ul class="nav nav-tabs" style="margin-bottom: 15px;">
+    <li class="nav-item" style="margin-left: 10px;">
+      <a class="nav-link" [class.active]="navIndex == 1" (click)="navIndex = 1" href="javascript:void(0)">生成内容</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="navIndex == 2" (click)="navIndex = 2" href="javascript:void(0)">模板</a>
+    </li>
+  </ul>
+  <sip-generate *ngIf="navIndex == 1"></sip-generate>
+  <sip-genrate-tmpl *ngIf="navIndex == 2"></sip-genrate-tmpl> -->
+  <sip-generate-log *ngIf="isGenerate"></sip-generate-log>
+  <sip-genrate-tmpl *ngIf="!isGenerate"></sip-genrate-tmpl>
+</div>

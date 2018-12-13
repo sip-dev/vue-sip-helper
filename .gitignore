@@ -1,0 +1,6 @@
+out
+node_modules
+*.DS_Store
+*.vsix
+webview/generate/dist/**
+webview/generate/dist

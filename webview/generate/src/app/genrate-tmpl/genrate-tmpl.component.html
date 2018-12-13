@@ -1,0 +1,46 @@
+<sip-generate *ngIf="isEditFileMode"></sip-generate>
+<div class="row" *ngIf="!isEditFileMode" style="margin-top: 10px;">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                模板列表
+                <ng-template #removeAllContent>
+                    <div sipCancelclick>
+                        确定要清空模板列表吗？
+                        <a href="javascript:void(0)" class="card-link" (click)="removeAll();removeAllPop.close()">确定</a>
+                        <a href="javascript:void(0)" class="card-link" (click)="removeAllPop.close()">取消</a>
+                    </div>
+                </ng-template>
+                <a href="javascript:void(0)" class="card-link float-right" style="margin-left: 1.25rem;" [ngbPopover]="removeAllContent"
+                    popoverTitle="清空" #removeAllPop="ngbPopover" container="body" placement="left">清空</a>
+                <a class="float-right" href="javascript:void(0)" style="margin-right: 5px;" (click)="add()">新建模板</a>
+            </div>
+            <div class="card-body" *ngIf="!hasTmpl">
+                暂无模板数据。
+            </div>
+            <ul class="list-group list-group-flush" *ngIf="hasTmpl">
+                <li class="list-group-item" *ngFor="let tmpl of tmpls" [class.active]="tmpl.active" (click)="activeTmpl(tmpl)">
+                    <ng-template #removeContent>
+                        <div style="width:180px;color:black !important;" sipCancelclick>
+                            确定要删除吗？
+                            <a href="javascript:void(0)" class="card-link" (click)="remove(tmpl);removePop.close()">确定</a>
+                            <a href="javascript:void(0)" class="card-link" (click)="removePop.close()">取消</a>
+                        </div>
+                    </ng-template>
+                    <a class="float-right" href="javascript:void(0)" [ngbPopover]="removeContent" popoverTitle="删除" #removePop="ngbPopover" placement="left"
+                        container="body">删除</a>
+                    <sip-popclose [pops]="[removePop]"></sip-popclose>
+                    <ng-template #tipFileNameContent>{{tmpl.title}}</ng-template>
+                    <input style="width: 30px;
+                        margin-right: 10px;
+                        border: 0px;" [(ngModel)]="tmpl.index" [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)="sortTmpl()" />
+                    <a href="javascript:void(0)" style="display: inline;width:70%;" class="file-title" [ngbTooltip]="tipFileNameContent" container="body">
+                        {{tmpl.title}}</a>
+                    <a class="float-right" href="javascript:void(0)" style="margin-right: 5px;" (click)="copy(tmpl)">复制</a>
+                    <a class="float-right" href="javascript:void(0)" style="margin-right: 5px;" (click)="edit(tmpl)">修改</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <sip-popclose [pops]="[removeAllPop]"></sip-popclose>
+</div>

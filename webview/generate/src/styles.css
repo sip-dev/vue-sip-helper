@@ -1,0 +1,48 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "./assets/styles/bootstrap.min.css";
+
+ul.list-group>li.active>a {
+    color: white;
+}
+
+.popover {
+    max-width:800px !important;
+}
+
+.tooltip-inner {
+    max-width:800px !important;
+}
+
+textarea {
+    white-space: nowrap;
+}
+
+a.file-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    width: 80%;
+    position: absolute;
+}
+/* .popover-header {
+    color: black;
+} */
+
+/* body.vscode-light {
+    color: black;
+}
+
+body.vscode-dark {
+    color: white;
+}
+
+body.vscode-high-contrast {
+    color: red;
+} */
+/* 
+body {
+    color: black;
+    background-color: white;
+} */

@@ -1,0 +1,135 @@
+{
+  "name": "ngsiphelper",
+  "displayName": "vue-sip-helper",
+  "description": "Run vue-sip-helper from vscode commandline.",
+  "icon": "images/logo.png",
+  "version": "1.0.0",
+  "publisher": "winpzs",
+  "bugs": {
+    "url": "https://github.com/sip-dev/vue-sip-helper/issues",
+    "email": "winpzs@gmail.com"
+  },
+  "homepage": "https://github.com/sip-dev/vue-sip-helper/blob/master/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sip-dev/vue-sip-helper.git"
+  },
+  "categories": [
+    "Snippets",
+    "Other"
+  ],
+  "engines": {
+    "vscode": "^1.23.0"
+  },
+  "activationEvents": [
+    "*"
+  ],
+  "keywords": [
+    "Angular",
+    "Angular 5",
+    "ng-sip",
+    "TypeScript"
+  ],
+  "main": "./out/src/extension",
+  "contributes": {
+    "snippets": [
+      {
+        "language": "html",
+        "path": "./snippets/html.json"
+      },
+      {
+        "language": "typescript",
+        "path": "./snippets/typescript.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "ngsiphelper.tosnippettext",
+        "title": "To Snippet Text"
+      },
+      {
+        "command": "ngsiphelper.quickpicks",
+        "title": "vue-sip-helper"
+      },
+      {
+        "command": "ngsiphelper.region",
+        "title": "Region Block"
+      },
+      {
+        "command": "ngsiphelper.sipgenerate",
+        "title": "ng-sip-generate"
+      },
+      {
+        "command": "ngsiphelper.component.switchfile",
+        "title": "ng-sip-switchfile"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "ngsiphelper.quickpicks",
+        "key": "ctrl+k ctrl+h",
+        "mac": "cmd+k cmd+h"
+      },
+      {
+        "command": "ngsiphelper.sipgenerate",
+        "key": "ctrl+k ctrl+g",
+        "mac": "cmd+k cmd+g"
+      },
+      {
+        "command": "ngsiphelper.component.switchfile",
+        "key": "ctrl+k ctrl+k",
+        "mac": "cmd+k cmd+k",
+        "when": "editorTextFocus"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "",
+          "command": "ngsiphelper.sipgenerate",
+          "group": "vue-sip-helper"
+        },
+        {
+          "when": "",
+          "command": "ngsiphelper.quickpicks",
+          "group": "vue-sip-helper"
+        }
+      ],
+      "editor/context": [
+        {
+          "when": "",
+          "command": "ngsiphelper.sipgenerate",
+          "group": "vue-sip-helper"
+        },
+        {
+          "when": "",
+          "command": "ngsiphelper.quickpicks",
+          "group": "vue-sip-helper"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "ngbuild": "cd ./webview/generate && npm run build && cd ../..",
+    "nginstall": "cd ./webview/generate && npm i",
+    "vscode:prepublish": "npm run ngbuild && tsc -p ./",
+    "compile": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install && npm run nginstall",
+    "vscode:package": "vsce package",
+    "vscode:publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.0.0",
+    "@types/node": "^8.0.0",
+    "mocha": "^4.0.0",
+    "run-in-terminal": "^0.0.3",
+    "rxjs": "^5.0.3",
+    "typescript": "^2.8.3",
+    "vscode": "^1.1.17"
+  },
+  "dependencies": {
+    "json-stable-stringify": "^1.0.1",
+    "jsonic": "^0.3.0",
+    "yargs-parser": "^8.1.0"
+  }
+}
