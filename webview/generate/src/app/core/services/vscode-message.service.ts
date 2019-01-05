@@ -73,7 +73,17 @@ export class VscodeMessageService {
                 fileName: '',
                 workspaceRoot: 'd:\\root',
                 extensionPath: 'd:\\temp\\extension',
-                modules: []
+                modules: [],
+                helper: `
+                /** 定义helper */
+                var _helper = {
+                    test() {
+                        return 'test';
+                    }
+                };
+                
+                /** 扩展helper */
+                SipHelper.extend(_helper);`
             }, p);
             this.options.modules = this.options.modules.slice();
             this.readConfig().subscribe((readConfig) => {
@@ -82,7 +92,17 @@ export class VscodeMessageService {
                 if (config) {
                     this.options.prefix = config.prefix;
                 }
-                SetVarObject(this.options);
+                let helper = {};
+                if (this.options.helper) {
+                    (new Function('SipHelper', this.options.helper))({
+                        extend: function (obj: any) {
+                            Object.assign(helper, obj);
+                        }
+                    });
+                }
+                SetVarObject(Object.assign({}, this.options, {
+                    helper: helper
+                }));
                 callback();
 
             });
@@ -101,7 +121,7 @@ export class VscodeMessageService {
      * @param flag 'w'
      * @example saveFile('name1111', 'test11112').subscribe()
      */
-    saveFile(file: string, content: string, basePath?: string, flag?: 'w' | null, dir?:boolean): Observable<string> {
+    saveFile(file: string, content: string, basePath?: string, flag?: 'w' | null, dir?: boolean): Observable<string> {
         return this._sendMsg('saveFile', { basePath: basePath, file: file, content: content, flag: flag, dir: dir === true });
     }
 

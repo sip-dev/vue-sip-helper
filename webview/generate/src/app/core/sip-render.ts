@@ -8,7 +8,7 @@ interface OutItem {
     children?: OutItem[];
 }
 
-let _chectRegex = /(\$|\`)/g;
+let _chectRegex = /(\$|\`|\\)/g;
 function _checkTemplate(template) {
     _chectRegex.lastIndex = 0;
     return template.replace(_chectRegex, '\\$1');

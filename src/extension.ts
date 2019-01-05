@@ -99,14 +99,14 @@ export function activate(context: ExtensionContext) {
         let curPath = path.dirname(curFile);
         let curFileName = path.basename(curFile);
         let curFileList = fs.readdirSync(curPath);
-        if (curFileList && curFileList.length >  0){
+        if (curFileList && curFileList.length > 0) {
             let picks = curFileList.filter((fileName) => fileName != curFileName && !IsDirectory(path.join(curPath, fileName)));
 
-                window.showQuickPick(picks).then(file => {
-                    if (!file) return;
-                    file = path.join(curPath, file);
-                    _openFile(file);
-                });
+            window.showQuickPick(picks).then(file => {
+                if (!file) return;
+                file = path.join(curPath, file);
+                _openFile(file);
+            });
         }
     }));
 
@@ -211,6 +211,9 @@ export function activate(context: ExtensionContext) {
         switch (config.command) {
             case 'config':
                 setConfig();
+                break;
+            case 'render-helper':
+                setHelper();
                 break;
             case 'npm':
                 npm();
@@ -402,9 +405,8 @@ export function activate(context: ExtensionContext) {
     };
 
     let setConfig = () => {
+        saveDefaultConfig();
         let fsPath = path.join(_getRootPath(), configFile);
-        if (!fs.existsSync(fsPath))
-            saveDefaultConfig();
 
         workspace.openTextDocument(fsPath).then((textDocument) => {
             if (!textDocument) return;
@@ -415,8 +417,33 @@ export function activate(context: ExtensionContext) {
 
     let saveDefaultConfig = () => {
         let fsPath = path.join(_getRootPath(), configFile);
+        if (fs.existsSync(fsPath)) return;
         let fsDefaultConfig = fs.readFileSync(path.join(context.extensionPath, 'default.config.json'), 'utf-8');
         fs.writeFileSync(fsPath, fsDefaultConfig, 'utf-8');
+    };
+
+    let helperFile = './vue-sip-helper.config.js';
+    let setHelper = () => {
+        saveDefaultHelper();
+
+        let fsPath = path.join(_getRootPath(), helperFile);
+        workspace.openTextDocument(fsPath).then((textDocument) => {
+            if (!textDocument) return;
+            window.showTextDocument(textDocument).then((editor) => {
+            });
+        });
+    };
+
+    let saveDefaultHelper = () => {
+        let fsPath = path.join(_getRootPath(), helperFile);
+        if (fs.existsSync(fsPath)) return;
+        let fsDefaultHelper = fs.readFileSync(path.join(context.extensionPath, 'default.config.js'), 'utf-8');
+        fs.writeFileSync(fsPath, fsDefaultHelper, 'utf-8');
+    };
+    let getHelper = (): string => {
+        let fsPath = path.join(_getRootPath(), helperFile);
+        let fsDefaultHelper = fs.readFileSync(path.join(context.extensionPath, 'default.config.js'), 'utf-8');
+        return (!fs.existsSync(fsPath)) ? fsDefaultHelper : fs.readFileSync(fsPath, 'utf-8');
     };
 
     let saveConfigTmpls = (templates: any[]) => {
@@ -666,7 +693,8 @@ ${props.join('\n')}
                         workspaceRoot: workspaceRoot,
                         extensionPath: context.extensionPath,
                         modules: FindUpwardModuleFiles(workspaceRoot, inputFile).map(file => ['@{curPath}', path.relative(curPath, file)].join(isLinux ? "/" : "\\")),
-                        generate: generateOpt
+                        generate: generateOpt,
+                        helper: getHelper()
                     };
                     receiveMsg(id, cmd, opt);
                     break;
@@ -688,8 +716,9 @@ ${props.join('\n')}
                             if (!fs.existsSync(fsPath)) {
                                 mkdirSync(fsPath);
                             }
-                            if (!data.dir){
+                            if (data.dir) {
                                 mkdirSync(file);
+                                receiveMsg(id, cmd, [retFile, '成功'].join(', '));
                             } else {
                                 fs.writeFile(file, content, { encoding: 'utf-8', flag: 'w' }, (err) => {
                                     receiveMsg(id, cmd, [retFile, err ? err.message : '成功'].join(', '));
@@ -730,7 +759,7 @@ ${props.join('\n')}
                     let retRegFile = path.relative(curPath, regFile);
                     let regModuleFile: string = fs.existsSync(data.moduleFile) ? data.moduleFile : path.join(regFilePath, data.moduleFile);
                     try {
-                    if (regModule(regFile, regModuleFile, data.className, data.regOpt)) {
+                        if (regModule(regFile, regModuleFile, data.className, data.regOpt)) {
                             receiveMsg(id, cmd, [retRegFile, '注册到', path.relative(curPath, regModuleFile), '成功'].join(', '));
                         }
                         else

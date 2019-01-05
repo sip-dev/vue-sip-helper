@@ -51,6 +51,11 @@
                     "builtin": true,
                     "command": "config",
                     "title": "编辑设置文件"
+                },
+                {
+                    "builtin": true,
+                    "command": "render-helper",
+                    "title": "编辑Render Helper"
                 }
             ]
         }

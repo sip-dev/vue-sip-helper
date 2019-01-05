@@ -67,7 +67,7 @@ export const STYLES = ['css', 'less', 'sass'];
 export const VARS = [
     'input', 'prefix',
     'fileName', 'type', 'path', 'className', 'styleType', 'importToModue', 'importToRouting',
-    'curPath', 'curFile', 'workspaceRoot', 'extend', 'pathType'
+    'curPath', 'curFile', 'workspaceRoot', 'extend', 'pathType', 'helper'
 ];
 
 export function GetDefaultFile(): IFileItem {
@@ -133,16 +133,17 @@ export function GetFileFullNameList(file: IFileItem): string[] {
     return fileList;
 }
 
-export function GetFileFullList(file: IFileItem): { fileName: string, content: string, dir:boolean }[] {
+export function GetFileFullList(file: IFileItem): { fileName: string, content: string, dir: boolean }[] {
     let type = file.type;
     let typeInfo = file.typeInfo;
     let fileList = [];
     let fileName = GetVar(file, JoinPath(file.path, file.fileName));
+    let dir = file.pathType == 'dir';
     if (typeInfo.ts) {
         let isImportToModue = file.typeInfo.importToModue;
         let isImportToRouting = file.typeInfo.importToRouting;
         fileList.push({
-            fileName: [fileName, 'ts'].join('.'),
+            fileName: dir ? fileName : [fileName, 'ts'].join('.'),
             content: GetVar(file, file.tsContent),
             className: file.className ? GetVar(file, file.className) : '',
             isModule: file.type == 'module',
@@ -152,35 +153,35 @@ export function GetFileFullList(file: IFileItem): { fileName: string, content: s
             importToRouting: file.importToRouting ? GetVar(file, file.importToRouting) : '',
             routePath: GetVar(file, '@{fileName}').split('.')[0],
             typeInfo: Object.assign({}, file.typeInfo),
-            dir: file.pathType == 'dir'
+            dir: dir
         });
     }
     if (typeInfo.extend) {
         fileList.push({
-            fileName: [fileName, file.extend].join('.'),
+            fileName: dir ? fileName : [fileName, file.extend].join('.'),
             content: GetVar(file, file.extendContent),
-            dir: file.pathType == 'dir'
+            dir: dir
         });
     }
     if (typeInfo.spec) {
         fileList.push({
-            fileName: [fileName, 'spec.ts'].join('.'),
+            fileName: dir ? fileName : [fileName, 'spec.ts'].join('.'),
             content: GetVar(file, file.specContent),
-            dir: file.pathType == 'dir'
+            dir: dir
         });
     }
     if (typeInfo.html) {
         fileList.push({
-            fileName: [fileName, 'html'].join('.'),
+            fileName: dir ? fileName : [fileName, 'html'].join('.'),
             content: GetVar(file, file.htmlContent),
-            dir: file.pathType == 'dir'
+            dir: dir
         });
     }
     if (typeInfo.style) {
         fileList.push({
-            fileName: [fileName, typeInfo.styleType || 'css'].join('.'),
+            fileName: dir ? fileName : [fileName, typeInfo.styleType || 'css'].join('.'),
             content: GetVar(file, file.styleContent),
-            dir: file.pathType == 'dir'
+            dir: dir
         });
     }
     return fileList;
@@ -210,23 +211,19 @@ export function GetVar(file: IFileItem, value: string): string {
 }
 
 let _pathSplice = '/';
-function GetVarProp(file: IFileItem, prop: string): string {
-    let str: string;
-    if (prop in file)
-        str = file[prop];
-    else if (prop in _varObj)
-        str = _varObj[prop];
-    return str ? str.replace('{' + prop + '}', '') : '';
-}
+// function GetVarProp(file: IFileItem, prop: string): string {
+//     let str: string;
+//     if (prop in file)
+//         str = file[prop];
+//     else if (prop in _varObj)
+//         str = _varObj[prop];
+//     return str ? str.replace('{' + prop + '}', '') : '';
+// }
 
 let _varObj: any = {};
 export function SetVarObject(obj: object) {
     _varObj = Object.assign(_varObj, obj);
     _pathSplice = _varObj['isLinux'] ? '/' : '\\';
-};
-
-_varObj.testFn = function(p){
-    return p ? p : 'testFn';
 };
 
 /**
@@ -251,6 +248,7 @@ export interface IVscodeOption {
     extensionPath?: string;
     modules: string[];
     generate?: { input: string; tmpl: string; };
+    helper?: string;
 }
 
 export interface ITmplItem {
@@ -296,10 +294,11 @@ export const DEFAULT_TMPLS: ITmplItem[] = [{
         {
             "active": true,
             "className": "@{#fileName}",
-            "fileName": "@{input}.@{type}",
+            "fileName": "@{input}",
             "htmlContent": "",
             "importToModue": "",
             "path": "",
+            "pathType": "file",
             "specContent": "import { @{className} } from './@{fileName}';\n\ndescribe('@{className}', () => {\n  it('should create an instance', () => {\n    expect(new @{className}()).toBeTruthy();\n  });\n});\n",
             "styleContent": "",
             "tsContent": "export class @{className} {\n}\n",
