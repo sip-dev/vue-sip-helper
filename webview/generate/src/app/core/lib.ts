@@ -133,7 +133,7 @@ export function GetFileFullNameList(file: IFileItem): string[] {
     return fileList;
 }
 
-export function GetFileFullList(file: IFileItem): { fileName: string, content: string }[] {
+export function GetFileFullList(file: IFileItem): { fileName: string, content: string, dir:boolean }[] {
     let type = file.type;
     let typeInfo = file.typeInfo;
     let fileList = [];
@@ -151,31 +151,36 @@ export function GetFileFullList(file: IFileItem): { fileName: string, content: s
             isImportToRouting: file.typeInfo.importToRouting,
             importToRouting: file.importToRouting ? GetVar(file, file.importToRouting) : '',
             routePath: GetVar(file, '@{fileName}').split('.')[0],
-            typeInfo: Object.assign({}, file.typeInfo)
+            typeInfo: Object.assign({}, file.typeInfo),
+            dir: file.pathType == 'dir'
         });
     }
     if (typeInfo.extend) {
         fileList.push({
             fileName: [fileName, file.extend].join('.'),
-            content: GetVar(file, file.extendContent)
+            content: GetVar(file, file.extendContent),
+            dir: file.pathType == 'dir'
         });
     }
     if (typeInfo.spec) {
         fileList.push({
             fileName: [fileName, 'spec.ts'].join('.'),
-            content: GetVar(file, file.specContent)
+            content: GetVar(file, file.specContent),
+            dir: file.pathType == 'dir'
         });
     }
     if (typeInfo.html) {
         fileList.push({
             fileName: [fileName, 'html'].join('.'),
-            content: GetVar(file, file.htmlContent)
+            content: GetVar(file, file.htmlContent),
+            dir: file.pathType == 'dir'
         });
     }
     if (typeInfo.style) {
         fileList.push({
             fileName: [fileName, typeInfo.styleType || 'css'].join('.'),
-            content: GetVar(file, file.styleContent)
+            content: GetVar(file, file.styleContent),
+            dir: file.pathType == 'dir'
         });
     }
     return fileList;

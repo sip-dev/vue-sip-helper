@@ -677,7 +677,7 @@ ${props.join('\n')}
                     receiveMsg(id, cmd, JSON.stringify(getConfig()));
                     break;
                 case 'saveFile':
-                    /**data:{ file: 'demo/demo.ts', content: 'content', basePath:'' } */
+                    /**data:{ file: 'demo/demo.ts', content: 'content', basePath:'', dir:false } */
                     let file: string = path.join(data.basePath || curPath, data.file);
                     let retFile = path.relative(curPath, file);
                     let overWrite = data.flag && data.flag.indexOf('w') >= 0;
@@ -688,9 +688,13 @@ ${props.join('\n')}
                             if (!fs.existsSync(fsPath)) {
                                 mkdirSync(fsPath);
                             }
-                            fs.writeFile(file, content, { encoding: 'utf-8', flag: 'w' }, (err) => {
-                                receiveMsg(id, cmd, [retFile, err ? err.message : '成功'].join(', '));
-                            });
+                            if (!data.dir){
+                                mkdirSync(file);
+                            } else {
+                                fs.writeFile(file, content, { encoding: 'utf-8', flag: 'w' }, (err) => {
+                                    receiveMsg(id, cmd, [retFile, err ? err.message : '成功'].join(', '));
+                                });
+                            }
                         }
                         catch (e) {
                             receiveMsg(id, cmd, [retFile, e.message].join(', '));

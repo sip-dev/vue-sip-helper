@@ -101,8 +101,8 @@ export class VscodeMessageService {
      * @param flag 'w'
      * @example saveFile('name1111', 'test11112').subscribe()
      */
-    saveFile(file: string, content: string, basePath?: string, flag?: string): Observable<string> {
-        return this._sendMsg('saveFile', { basePath: basePath, file: file, content: content, flag: flag });
+    saveFile(file: string, content: string, basePath?: string, flag?: 'w' | null, dir?:boolean): Observable<string> {
+        return this._sendMsg('saveFile', { basePath: basePath, file: file, content: content, flag: flag, dir: dir === true });
     }
 
     readFile(file: string, basePath?: string): Observable<string> {

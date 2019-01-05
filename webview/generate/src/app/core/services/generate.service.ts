@@ -125,6 +125,7 @@ export class GenerateService {
             importToRouting?: string;
             typeInfo?: any;
             routePath?: string;
+            dir:boolean;
         }[] = [];
         this.generateFirstFile = '';
         let input = this._vsMsg.input;
@@ -137,7 +138,7 @@ export class GenerateService {
         saveList.forEach((file) => {
             count++;
             this.generateFirstFile || (this.generateFirstFile = file.fileName);
-            this._vsMsg.saveFile(file.fileName, file.content).subscribe((res)=>{
+            this._vsMsg.saveFile(file.fileName, file.content, null, null, file.dir).subscribe((res)=>{
                 this.genReports.push(res || (file.fileName + '生成成功！！'));
                 setTimeout(() => {
                     count--;
