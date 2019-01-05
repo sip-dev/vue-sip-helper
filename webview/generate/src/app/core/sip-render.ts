@@ -14,7 +14,7 @@ function _checkTemplate(template) {
     return template.replace(_chectRegex, '\\$1');
 }
 
-let _itemRegex = /\@\{\{(.*?)\}\}/mgi;
+let _itemRegex = /\@\{(.*?)\}/mgi;
 let _forRegex = /^\s*\bfor\b(.*?)$/i;
 let _forEndRegex = /^\s*\/\bfor\b\s*$/i;
 let _ifRegex = /^\s*\bif\b(.*?)$/i;
@@ -156,13 +156,13 @@ function _makeForItem(item: OutItem): string {
     let listName = content[2];
 
     let forContent = `(function () {
-    if (!${listName}) return '';
-    var _s_i_outs_ = [];
+    if (!${listName} || ${listName}.length == 0) return '';
+    var _s_i_for_outs_ = [];
     for (var i = 0, len = ${listName}.length; i < len; i++) {
         var ${itemName}_index = i, ${itemName} = ${listName}[i];
-        _s_i_outs_.push(${str});
+        _s_i_for_outs_.push(${str});
     }
-    return _s_i_outs_.join('');
+    return _s_i_for_outs_.join('');
 })()`;
     return forContent;
 }
@@ -194,26 +194,29 @@ function _compile(template: string): Buildtor {
     let outs: string[] = [];
     let root: OutItem = _translate(template);
     _compileItem(root, outs);
-    let fn = new Function('_s_i_data_190104', `var _s_i_mainFn_190104 = function(_s_i_data_190104){
-        with(_s_i_data_190104){
-            return ${_makeComileString(outs)};
+    let fn
+    try {
+        fn = new Function('_s_i_data_190104', `var _s_i_mainFn_190104 = function(_s_i_data_190104){
+            with(_s_i_data_190104){
+                return ${_makeComileString(outs)};
+            }
         }
+        try{
+            return _s_i_mainFn_190104(_s_i_data_190104);
+        } catch(e){
+            return '';
+        }`);
+
+    } catch (e) {
+        fn = function () { return '' };
     }
-    try{
-        return _s_i_mainFn_190104(_s_i_data_190104);
-    } catch(e){
-        return '';
-    }`);
     return fn as any;
 }
 
 export const SipRender = {
-    /** 缓存记录数， 最小40，默认100 */
-    cacheCount: 100,
     compile(template: string): Buildtor {
         let cache = _getCache(template);
         if (cache) {
-            cache.time = new Date().valueOf();
             return cache.buildtor;
         }
         let buildtor = _compile(template);
@@ -232,6 +235,7 @@ interface CacheItem {
     buildtor: Buildtor;
 }
 
+let _cacheMax = 200;
 let _caches: CacheItem[] = [];
 
 function _setCache(template: string, buildtor: Buildtor) {
@@ -240,13 +244,16 @@ function _setCache(template: string, buildtor: Buildtor) {
         template: template,
         buildtor: buildtor
     });
-    let cacheCount =  SipRender.cacheCount < 40 ? 40 : SipRender.cacheCount;
-    if (_caches.length > cacheCount) {
-        _caches.sort(function (item1, item2) { return item1.time == item2.time ? 0 : (item1.time < item2.time ? 1 : -1) })
-        _caches.splice(-10);
+    if (_caches.length > _cacheMax) {
+        _caches.sort(function (item1, item2) { return item1.time == item2.time ? 0 : (item1.time < item2.time ? 1 : -1) });
+        _caches.splice(-20);
+        // _caches = _caches.slice(20);
     }
 }
 
 function _getCache(template: string): CacheItem {
-    return _caches.find(function (item) { return item.template == template });
+    let cache = _caches.find(function (item) { return item.template == template });
+    if (cache)
+        cache.time = new Date().valueOf();
+    return cache;
 }

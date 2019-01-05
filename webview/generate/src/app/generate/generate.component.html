@@ -1,7 +1,7 @@
 <div class="alert alert-info" role="alert" style="margin-top: 10px;">
-模板名称：<input [(ngModel)]="curEditTmplTitle" />
-<a href="javascript:void(0)" class="card-link float-right" style="margin-left: 1.25rem;" (click)="back()">返回</a>
-<a href="javascript:void(0)" class="card-link float-right" (click)="saveTmpl()">保存</a>
+    模板名称：<input [(ngModel)]="curEditTmplTitle" [ngModelOptions]="{updateOn: 'blur'}" />
+    <a href="javascript:void(0)" class="card-link float-right" style="margin-left: 1.25rem;" (click)="back()">返回</a>
+    <a href="javascript:void(0)" class="card-link float-right" (click)="saveTmpl()">保存</a>
 
 </div>
 <div class="row">
@@ -17,8 +17,9 @@
                             <a href="javascript:void(0)" class="card-link" (click)="removeAllPop.close()">取消</a>
                         </div>
                     </ng-template>
-                    <a href="javascript:void(0)" class="card-link float-right" style="margin-left: 1.25rem;" [ngbPopover]="removeAllContent"
-                        popoverTitle="清空" #removeAllPop="ngbPopover" container="body" placement="right">清空</a>
+                    <a href="javascript:void(0)" class="card-link float-right" style="margin-left: 1.25rem;"
+                        [ngbPopover]="removeAllContent" popoverTitle="清空" #removeAllPop="ngbPopover" container="body"
+                        placement="right">清空</a>
                 </span>
             </div>
             <ul class="list-group list-group-flush" *ngIf="hasFile">
@@ -30,26 +31,26 @@
                             <a href="javascript:void(0)" class="card-link" (click)="removePop.close()">取消</a>
                         </div>
                     </ng-template>
-                    <a class="float-right" href="javascript:void(0)" [ngbPopover]="removeContent" popoverTitle="删除" #removePop="ngbPopover" placement="top"
-                        container="body">删除</a>
+                    <a class="float-right" href="javascript:void(0)" [ngbPopover]="removeContent" popoverTitle="删除"
+                        #removePop="ngbPopover" placement="top" container="body">删除</a>
                     <sip-popclose [pops]="[removePop]"></sip-popclose>
                     <ng-template #tipFileNameContent>{{getFileFullName(file)}}</ng-template>
                     <a href="javascript:void(0)" class="file-title" [ngbTooltip]="tipFileNameContent" container="body">{{getFileFullName(file)}}</a>
                 </li>
             </ul>
             <div class="card-body" *ngIf="showFormType == 'add'">
-                <form>
+                <form onsubmit="return false">
                     <div class="form-row align-items-center">
                         <div class="col-sm-8 my-1">
                             <label class="sr-only" for="inlineFormInputName">模板：</label>
-                            <select class="form-control form-control-sm" name="addgenType" [(ngModel)]="tmplIndex">
+                            <select class="form-control form-control-sm" name="addgenType" [(ngModel)]="tmplIndex" [ngModelOptions]="{updateOn: 'blur'}">
                                 <option value="-1">默认模板</option>
                                 <option *ngFor="let tmpl of tmpls;let i=index" value="{{i}}">{{tmpl.title}}</option>
                             </select>
                         </div>
                         <div class="col-auto my-1">
-                            <button type="submit" class="btn btn-primary" (click)="add()">添加</button>
-                            <button type="submit" class="btn btn-secondary" style="margin-left: 10px;" (click)="showFormType = 'list'">取消</button>
+                            <button class="btn btn-primary" (click)="add()">添加</button>
+                            <button class="btn btn-secondary" style="margin-left: 10px;" (click)="showFormType = 'list'">取消</button>
                         </div>
                     </div>
                 </form>
@@ -98,48 +99,56 @@
                 </li>
             </ul>
             <div class="card-body" style="padding-top: 4px;">
-                <form>
+                <form onsubmit="return false">
                     <div *ngIf="editContentType == 0">
                         <div class="form-group">
                             <label class="col-form-label">fileName：</label>
-                            <input type="input" class="form-control" name="fileName" [(ngModel)]="curFile.fileName">
+                            <input type="input" class="form-control" name="fileName" [(ngModel)]="curFile.fileName" [ngModelOptions]="{updateOn: 'blur'}">
                         </div>
                         <div class="form-group">
+                            <label class="col-form-label">pathType：</label>
+                            <select class="form-control form-control-sm" name="pathType" [(ngModel)]="curFile.pathType" [ngModelOptions]="{updateOn: 'blur'}">
+                                <option value="file">file</option>
+                                <option value="dir">dir</option>
+                            </select>
+                        </div>
+                        <div class="form-group" *ngIf="curFile.pathType != 'dir'">
                             <label class="col-form-label">extend：</label>
-                            <input type="input" class="form-control" name="extend" [(ngModel)]="curFile.extend">
+                            <input type="input" class="form-control" name="extend" [(ngModel)]="curFile.extend" [ngModelOptions]="{updateOn: 'blur'}">
                         </div>
                         <div class="form-group">
                             <label class="col-form-label">path：</label>
-                            <input type="input" class="form-control" name="filePath" [(ngModel)]="curFile.path">
+                            <input type="input" class="form-control" name="filePath" [(ngModel)]="curFile.path" [ngModelOptions]="{updateOn: 'blur'}">
                         </div>
                         <div class="form-group">
                             <label class="col-form-label">className：</label>
-                            <input type="input" class="form-control" name="className" [(ngModel)]="curFile.className">
+                            <input type="input" class="form-control" name="className" [(ngModel)]="curFile.className" [ngModelOptions]="{updateOn: 'blur'}">
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label class="col-form-label">type：</label>
-                            <select class="form-control form-control-sm" name="genType" [(ngModel)]="curFile.type" (ngModelChange)="changeType()">
+                            <select class="form-control form-control-sm" name="genType" [(ngModel)]="curFile.type" (ngModelChange)="changeType()" [ngModelOptions]="{updateOn: 'blur'}">
                                 <option *ngFor="let type of typeList" value="{{type}}">{{type}}</option>
                             </select>
-                        </div>
+                        </div> -->
                         <div class="form-group">
                             <div class="form-check form-check-inline" *ngIf="curTypeInfo.ts">
-                                <input class="form-check-input" id="inlineCheckbox_ts" type="checkbox" [(ngModel)]="curFile.typeInfo.ts" [ngModelOptions]="{standalone: true}">
+                                <input class="form-check-input" id="inlineCheckbox_ts" type="checkbox" [(ngModel)]="curFile.typeInfo.ts"
+                                    [ngModelOptions]="{standalone: true}">
                                 <label class="form-check-label" for="inlineCheckbox_ts">ts</label>
                             </div>
                             <div class="form-check form-check-inline" *ngIf="curTypeInfo.spec">
-                                <input class="form-check-input" id="inlineCheckbox_spec" type="checkbox" value="spec" [(ngModel)]="curFile.typeInfo.spec"
-                                    [ngModelOptions]="{standalone: true}">
+                                <input class="form-check-input" id="inlineCheckbox_spec" type="checkbox" value="spec"
+                                    [(ngModel)]="curFile.typeInfo.spec" [ngModelOptions]="{standalone: true}">
                                 <label class="form-check-label" for="inlineCheckbox_spec">spec</label>
                             </div>
                             <div class="form-check form-check-inline" *ngIf="curTypeInfo.html">
-                                <input class="form-check-input" id="inlineCheckbox_html" type="checkbox" value="html" [(ngModel)]="curFile.typeInfo.html"
-                                    [ngModelOptions]="{standalone: true}">
+                                <input class="form-check-input" id="inlineCheckbox_html" type="checkbox" value="html"
+                                    [(ngModel)]="curFile.typeInfo.html" [ngModelOptions]="{standalone: true}">
                                 <label class="form-check-label" for="inlineCheckbox_html">html</label>
                             </div>
                             <div class="form-check form-check-inline" *ngIf="curTypeInfo.style">
-                                <input class="form-check-input" id="inlineCheckbox_style" type="checkbox" value="style" [(ngModel)]="curFile.typeInfo.style"
-                                    [ngModelOptions]="{standalone: true}">
+                                <input class="form-check-input" id="inlineCheckbox_style" type="checkbox" value="style"
+                                    [(ngModel)]="curFile.typeInfo.style" [ngModelOptions]="{standalone: true}">
                                 <label class="form-check-label" for="inlineCheckbox_style">style</label>
                                 <select [(ngModel)]="curFile.typeInfo.styleType" name="styleType" style="margin-left: 5px;">
                                     <option *ngFor="let style of styleList" value="{{style}}">{{style}}</option>
@@ -148,61 +157,62 @@
                         </div>
                         <div class="form-group" *ngIf="curTypeInfo.importToModue">
                             <label class="col-form-label">importToModue：</label>
-                            <input name="importToModue" type="input" class="form-control" [(ngModel)]="curFile.importToModue" [ngbTypeahead]="searchImportM"
-                                (focus)="focusImportM.next($event.target.value)" (click)="clickImportM.next($event.target.value)"
+                            <input name="importToModue" type="input" class="form-control" [(ngModel)]="curFile.importToModue" [ngModelOptions]="{updateOn: 'blur'}"
+                                [ngbTypeahead]="searchImportM" (focus)="focusImportM.next($event.target.value)" (click)="clickImportM.next($event.target.value)"
                                 #instImportM="ngbTypeahead" />
                         </div>
                         <div class="form-group">
                             <div class="form-check form-check-inline" *ngIf="curTypeInfo.moduleImport">
-                                <input class="form-check-input" id="inlineCheckbox_moduleImport" type="checkbox" [(ngModel)]="curFile.typeInfo.moduleImport" [ngModelOptions]="{standalone: true}">
+                                <input class="form-check-input" id="inlineCheckbox_moduleImport" type="checkbox"
+                                    [(ngModel)]="curFile.typeInfo.moduleImport" [ngModelOptions]="{standalone: true}">
                                 <label class="form-check-label" for="inlineCheckbox_moduleImport">imports</label>
                             </div>
                             <div class="form-check form-check-inline" *ngIf="curTypeInfo.moduleDeclaration">
-                                <input class="form-check-input" id="inlineCheckbox_moduleDeclaration" type="checkbox" [(ngModel)]="curFile.typeInfo.moduleDeclaration"
-                                    [ngModelOptions]="{standalone: true}">
+                                <input class="form-check-input" id="inlineCheckbox_moduleDeclaration" type="checkbox"
+                                    [(ngModel)]="curFile.typeInfo.moduleDeclaration" [ngModelOptions]="{standalone: true}">
                                 <label class="form-check-label" for="inlineCheckbox_moduleDeclaration">declarations</label>
                             </div>
                             <div class="form-check form-check-inline" *ngIf="curTypeInfo.moduleEntryComponent">
-                                <input class="form-check-input" id="inlineCheckbox_moduleEntryComponent" type="checkbox" [(ngModel)]="curFile.typeInfo.moduleEntryComponent"
-                                    [ngModelOptions]="{standalone: true}">
+                                <input class="form-check-input" id="inlineCheckbox_moduleEntryComponent" type="checkbox"
+                                    [(ngModel)]="curFile.typeInfo.moduleEntryComponent" [ngModelOptions]="{standalone: true}">
                                 <label class="form-check-label" for="inlineCheckbox_moduleEntryComponent">entryComponents</label>
                             </div>
                             <div class="form-check form-check-inline" *ngIf="curTypeInfo.moduleExport">
-                                <input class="form-check-input" id="inlineCheckbox_moduleExport" type="checkbox" [(ngModel)]="curFile.typeInfo.moduleExport"
-                                    [ngModelOptions]="{standalone: true}">
+                                <input class="form-check-input" id="inlineCheckbox_moduleExport" type="checkbox"
+                                    [(ngModel)]="curFile.typeInfo.moduleExport" [ngModelOptions]="{standalone: true}">
                                 <label class="form-check-label" for="inlineCheckbox_moduleExport">exports</label>
                             </div>
                         </div>
                         <div class="form-group" *ngIf="curTypeInfo.importToRouting">
                             <label class="col-form-label">importToRouting：</label>
-                            <input name="importToRouting" type="input" class="form-control" [(ngModel)]="curFile.importToRouting" [ngbTypeahead]="searchImportR"
-                                (focus)="focusImportR.next($event.target.value)" (click)="clickImportR.next($event.target.value)"
+                            <input name="importToRouting" type="input" class="form-control" [(ngModel)]="curFile.importToRouting" [ngModelOptions]="{updateOn: 'blur'}"
+                                [ngbTypeahead]="searchImportR" (focus)="focusImportR.next($event.target.value)" (click)="clickImportR.next($event.target.value)"
                                 #instImportR="ngbTypeahead" />
                         </div>
                     </div>
                     <div *ngIf="editContentType == 1">
                         <div class="form-group">
-                            <textarea class="form-control" rows="25" name="filetscontent" [(ngModel)]="curFile.tsContent"></textarea>
+                            <textarea class="form-control" rows="25" name="filetscontent" [(ngModel)]="curFile.tsContent" [ngModelOptions]="{updateOn: 'blur'}"></textarea>
                         </div>
                     </div>
                     <div *ngIf="editContentType == 2">
                         <div class="form-group">
-                            <textarea class="form-control" rows="25" name="filespeccontent" [(ngModel)]="curFile.specContent"></textarea>
+                            <textarea class="form-control" rows="25" name="filespeccontent" [(ngModel)]="curFile.specContent" [ngModelOptions]="{updateOn: 'blur'}"></textarea>
                         </div>
                     </div>
                     <div *ngIf="editContentType == 3">
                         <div class="form-group">
-                            <textarea class="form-control" rows="25" name="filehtmlcontent" [(ngModel)]="curFile.htmlContent"></textarea>
+                            <textarea class="form-control" rows="25" name="filehtmlcontent" [(ngModel)]="curFile.htmlContent" [ngModelOptions]="{updateOn: 'blur'}"></textarea>
                         </div>
                     </div>
                     <div *ngIf="editContentType == 4">
                         <div class="form-group">
-                            <textarea class="form-control" rows="25" name="filestylecontent" [(ngModel)]="curFile.styleContent"></textarea>
+                            <textarea class="form-control" rows="25" name="filestylecontent" [(ngModel)]="curFile.styleContent" [ngModelOptions]="{updateOn: 'blur'}"></textarea>
                         </div>
                     </div>
                     <div *ngIf="editContentType == 5">
                         <div class="form-group">
-                            <textarea class="form-control" rows="25" name="fileextendcontent" [(ngModel)]="curFile.extendContent"></textarea>
+                            <textarea class="form-control" rows="25" name="fileextendcontent" [(ngModel)]="curFile.extendContent" [ngModelOptions]="{updateOn: 'blur'}"></textarea>
                         </div>
                     </div>
                 </form>

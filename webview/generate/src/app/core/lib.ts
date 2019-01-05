@@ -1,8 +1,10 @@
+import { SipRender } from "./sip-render";
 
 export interface IFileItem {
     input?: string;
     fileName: string;
     path: string;
+    pathType?: 'dir' | 'file';
     type: string;
     className: string;
     typeInfo?: IGenTypeInfo;
@@ -13,8 +15,8 @@ export interface IFileItem {
     specContent?: string;
     htmlContent?: string;
     styleContent?: string;
-    extend?:string;
-    extendContent?:string;
+    extend?: string;
+    extendContent?: string;
 }
 
 export interface IGenTypeInfo {
@@ -30,7 +32,7 @@ export interface IGenTypeInfo {
     moduleDeclaration?: boolean;
     moduleEntryComponent?: boolean;
     moduleProvider?: boolean;
-    extend?:boolean;
+    extend?: boolean;
 }
 
 export interface IGenType {
@@ -65,11 +67,11 @@ export const STYLES = ['css', 'less', 'sass'];
 export const VARS = [
     'input', 'prefix',
     'fileName', 'type', 'path', 'className', 'styleType', 'importToModue', 'importToRouting',
-    'curPath', 'curFile', 'workspaceRoot', 'extend'
+    'curPath', 'curFile', 'workspaceRoot', 'extend', 'pathType'
 ];
 
 export function GetDefaultFile(): IFileItem {
-    let type = 'class';
+    let type = 'extend';
     let typeInfo = Object.assign({}, TYPES[type]);
     return {
         input: '',
@@ -80,6 +82,7 @@ export function GetDefaultFile(): IFileItem {
         typeInfo: typeInfo,
         importToModue: '',
         active: false,
+        pathType: 'file',
         tsContent: '',
         specContent: '',
         htmlContent: '',
@@ -98,15 +101,20 @@ export function JoinPath(path: string, fileName: string): string {
 }
 
 export function GetFileFullName(file: IFileItem): string {
-    let type = file.type;
+    // let type = file.type;
     let typeInfo = file.typeInfo;
-    let exts = [];
-    typeInfo.ts && exts.push('ts');
-    typeInfo.extend && exts.push(file.extend);
-    typeInfo.spec && exts.push('spec');
-    typeInfo.html && exts.push('html');
-    typeInfo.style && exts.push(typeInfo.styleType);
-    let name = [file.fileName.trim(), exts.join(' | ')].join('.').replace(/[.]{2,}/g, '.');
+    let name = file.fileName.trim();
+
+    if (file.pathType != 'dir') {
+        let exts = [];
+        typeInfo.ts && exts.push('ts');
+        typeInfo.extend && exts.push(file.extend);
+        typeInfo.spec && exts.push('spec');
+        typeInfo.html && exts.push('html');
+        typeInfo.style && exts.push(typeInfo.styleType);
+        name = [name, exts.join(' | ')].join('.').replace(/[.]{2,}/g, '.');
+    }
+    name = name.replace(/[.]{2,}/g, '.');
 
     let fullName = JoinPath(file.path, name);
     return GetVar(file, fullName);
@@ -146,7 +154,7 @@ export function GetFileFullList(file: IFileItem): { fileName: string, content: s
             typeInfo: Object.assign({}, file.typeInfo)
         });
     }
-    if (typeInfo.extend){
+    if (typeInfo.extend) {
         fileList.push({
             fileName: [fileName, file.extend].join('.'),
             content: GetVar(file, file.extendContent)
@@ -178,18 +186,22 @@ export function GetVar(file: IFileItem, value: string): string {
     if (!value) return "";
     _varFindRegex.lastIndex = 0;
     if (!_varFindRegex.test(value)) return value;
-    _varFindRegex.lastIndex = 0;
-    value = value.replace(_varFindRegex, function (find, name) {
-        var text = '';
-        if (name == 'styleType') {
-            text = file.typeInfo.styleType;
-        } else
-            text = GetVarProp(file, name);
-        text = GetVar(file, text);
-        return find.indexOf('#') >= 0 ? MakePascalCasingName(text) : text;
-    });
+    let data = Object.assign({
+        styleType: file.typeInfo.styleType
+    }, _varObj, file);
+    return SipRender.render(value, data);
+    // _varFindRegex.lastIndex = 0;
+    // value = value.replace(_varFindRegex, function (find, name) {
+    //     var text = '';
+    //     if (name == 'styleType') {
+    //         text = file.typeInfo.styleType;
+    //     } else
+    //         text = GetVarProp(file, name);
+    //     text = GetVar(file, text);
+    //     return find.indexOf('#') >= 0 ? MakePascalCasingName(text) : text;
+    // });
 
-    return value;
+    // return value;
 }
 
 let _pathSplice = '/';
@@ -202,10 +214,14 @@ function GetVarProp(file: IFileItem, prop: string): string {
     return str ? str.replace('{' + prop + '}', '') : '';
 }
 
-let _varObj: object = {};
+let _varObj: any = {};
 export function SetVarObject(obj: object) {
     _varObj = Object.assign(_varObj, obj);
     _pathSplice = _varObj['isLinux'] ? '/' : '\\';
+};
+
+_varObj.testFn = function(p){
+    return p ? p : 'testFn';
 };
 
 /**
