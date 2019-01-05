@@ -132,12 +132,13 @@ export class GenerateService {
         this.files.forEach((file) => {
             file = CloneFile(file);
             file.input = input;
-            saveList = saveList.concat(GetFileFullList(file));
+            saveList = saveList.concat(GetFileFullList(file, this.genReports));
         });
         let count = 0;
         saveList.forEach((file) => {
             count++;
-            this.generateFirstFile || (this.generateFirstFile = file.fileName);
+            if (!file.dir)
+                this.generateFirstFile || (this.generateFirstFile = file.fileName);
             this._vsMsg.saveFile(file.fileName, file.content, null, null, file.dir).subscribe((res)=>{
                 this.genReports.push(res || (file.fileName + '生成成功！！'));
                 setTimeout(() => {

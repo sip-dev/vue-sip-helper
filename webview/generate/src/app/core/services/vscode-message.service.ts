@@ -75,15 +75,22 @@ export class VscodeMessageService {
                 extensionPath: 'd:\\temp\\extension',
                 modules: [],
                 helper: `
+
                 /** 定义helper */
                 var _helper = {
-                    test() {
-                        return 'test';
+                    /** 大驼峰转换：sip-user_list.component ===> SipUserListComponent */
+                    upperCamel(str) {
+                        return (str || '').replace(/\b(\w)|\s(\w)/g, function (m) { return m.toUpperCase(); }).replace(/[^a-z0-9]/gi, '');
+                    },
+                    /** 小驼峰转换：sip-user_list.component ===> sipUserListComponent */
+                    camel(str) {
+                        return _helper.upperCamel(str).replace(/^\w/, function (f) { return f.toLowerCase(); });
                     }
                 };
                 
                 /** 扩展helper */
-                SipHelper.extend(_helper);`
+                SipHelper.extend(_helper);
+`
             }, p);
             this.options.modules = this.options.modules.slice();
             this.readConfig().subscribe((readConfig) => {
@@ -96,7 +103,8 @@ export class VscodeMessageService {
                 if (this.options.helper) {
                     (new Function('SipHelper', this.options.helper))({
                         extend: function (obj: any) {
-                            Object.assign(helper, obj);
+                            helper = obj;
+                            // Object.assign(helper, obj);
                         }
                     });
                 }

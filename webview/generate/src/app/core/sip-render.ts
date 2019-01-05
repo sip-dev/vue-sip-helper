@@ -208,7 +208,7 @@ function _compile(template: string): Buildtor {
         }`);
 
     } catch (e) {
-        fn = function () { return '' };
+        fn = function () { return template };
     }
     return fn as any;
 }

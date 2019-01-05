@@ -65,15 +65,22 @@
             <div class="card-header">
                 文件信息
                 <ng-template #helpContent>
-                    <div class="alert alert-primary" style="width:540px;" role="alert" sipCancelclick>
-                        <div>
+                    <div class="alert alert-primary" style="width:570px;" role="alert" sipCancelclick>
+                        <div style="margin-top: 3px;">
                             <b>{{ '@{' }}变量{{ '}' }}</b>：引用变量</div>
-                        <div style="margin-top: 10px;">
-                            <b>{{ '@{' }}#变量{{ '}' }}</b>：首字母为大写，如：user-list.component转换成UserListComponent</div>
-                        <div style="margin-top: 10px;">
+                        <div style="margin-top: 3px;">
+                            <b>语句 if</b>：{{ '@{if n == 1} ... @{else n == 2} ... @{/if}' }}
+                        </div>
+                        <div style="margin-top: 3px;">
+                            <b>语句 for</b>：{{ '@{for item in list} ... @{/for}' }}
+                        </div>
+                        <!-- <div style="margin-top: 3px;">
+                            <b>语句 await</b>：{{ '@{await promise to ret} ... @{/await}' }}
+                        </div> -->
+                        <div style="margin-top: 3px;">
                             <b>可用变量</b>：{{vars}}</div>
                     </div>
-                    <a href="javascript:void(0)" class="card-link" (click)="helpPop.close()">关闭</a>
+                    <!-- <a href="javascript:void(0)" class="card-link" (click)="helpPop.close()">关闭</a> -->
                 </ng-template>
                 <a href="javascript:void(0)" class="card-link float-right" [ngbPopover]="helpContent" #helpPop="ngbPopover"
                     placement="left">变量说明</a>

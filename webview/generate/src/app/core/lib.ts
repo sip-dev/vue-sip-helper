@@ -64,10 +64,16 @@ export const TYPES: IGenType = {
 
 export const STYLES = ['css', 'less', 'sass'];
 
+// export const VARS = [
+//     'input', 'prefix',
+//     'fileName', 'type', 'path', 'className', 'styleType', 'importToModue', 'importToRouting',
+//     'curPath', 'curFile', 'workspaceRoot', 'extend', 'pathType', 'helper'
+// ];
+
 export const VARS = [
     'input', 'prefix',
-    'fileName', 'type', 'path', 'className', 'styleType', 'importToModue', 'importToRouting',
-    'curPath', 'curFile', 'workspaceRoot', 'extend', 'pathType', 'helper'
+    'fileName', 'pathType', 'extend', 'path', 'className',
+    'curPath', 'curFile', 'workspaceRoot', 'helper'
 ];
 
 export function GetDefaultFile(): IFileItem {
@@ -121,7 +127,7 @@ export function GetFileFullName(file: IFileItem): string {
 }
 
 export function GetFileFullNameList(file: IFileItem): string[] {
-    let type = file.type;
+    // let type = file.type;
     let typeInfo = file.typeInfo;
     let fileList: string[] = [];
     let fileName = GetVar(file, JoinPath(file.path, file.fileName));
@@ -133,25 +139,25 @@ export function GetFileFullNameList(file: IFileItem): string[] {
     return fileList;
 }
 
-export function GetFileFullList(file: IFileItem): { fileName: string, content: string, dir: boolean }[] {
+export function GetFileFullList(file: IFileItem, logs?:string[]): { fileName: string, content: string, dir: boolean }[] {
     let type = file.type;
     let typeInfo = file.typeInfo;
     let fileList = [];
-    let fileName = GetVar(file, JoinPath(file.path, file.fileName));
+    let fileName = GetVar(file, JoinPath(file.path, file.fileName), logs);
     let dir = file.pathType == 'dir';
     if (typeInfo.ts) {
         let isImportToModue = file.typeInfo.importToModue;
         let isImportToRouting = file.typeInfo.importToRouting;
         fileList.push({
             fileName: dir ? fileName : [fileName, 'ts'].join('.'),
-            content: GetVar(file, file.tsContent),
-            className: file.className ? GetVar(file, file.className) : '',
+            content: GetVar(file, file.tsContent, logs),
+            className: file.className ? GetVar(file, file.className, logs) : '',
             isModule: file.type == 'module',
             isImportToModue: file.typeInfo.importToModue,
-            importToModue: file.importToModue ? GetVar(file, file.importToModue) : '',
+            importToModue: file.importToModue ? GetVar(file, file.importToModue, logs) : '',
             isImportToRouting: file.typeInfo.importToRouting,
-            importToRouting: file.importToRouting ? GetVar(file, file.importToRouting) : '',
-            routePath: GetVar(file, '@{fileName}').split('.')[0],
+            importToRouting: file.importToRouting ? GetVar(file, file.importToRouting, logs) : '',
+            routePath: GetVar(file, '@{fileName}', logs).split('.')[0],
             typeInfo: Object.assign({}, file.typeInfo),
             dir: dir
         });
@@ -159,43 +165,84 @@ export function GetFileFullList(file: IFileItem): { fileName: string, content: s
     if (typeInfo.extend) {
         fileList.push({
             fileName: dir ? fileName : [fileName, file.extend].join('.'),
-            content: GetVar(file, file.extendContent),
+            content: GetVar(file, file.extendContent, logs),
             dir: dir
         });
     }
     if (typeInfo.spec) {
         fileList.push({
             fileName: dir ? fileName : [fileName, 'spec.ts'].join('.'),
-            content: GetVar(file, file.specContent),
+            content: GetVar(file, file.specContent, logs),
             dir: dir
         });
     }
     if (typeInfo.html) {
         fileList.push({
             fileName: dir ? fileName : [fileName, 'html'].join('.'),
-            content: GetVar(file, file.htmlContent),
+            content: GetVar(file, file.htmlContent, logs),
             dir: dir
         });
     }
     if (typeInfo.style) {
         fileList.push({
             fileName: dir ? fileName : [fileName, typeInfo.styleType || 'css'].join('.'),
-            content: GetVar(file, file.styleContent),
+            content: GetVar(file, file.styleContent, logs),
             dir: dir
         });
     }
     return fileList;
 }
 
+const _core_hasOwn = Object.prototype.hasOwnProperty;
+function _hasOwnProp(obj: any, prop: string) {
+    return _core_hasOwn.call(obj, prop);
+}
+function _eachProp(obj: any, callback: (item: any, name: string) => void, thisArg: any = null) {
+    if (!obj) return;
+    var item;
+    for (var n in obj) {
+        if (_hasOwnProp(obj, n)) {
+            item = obj[n];
+            if (callback.call(thisArg, item, n) === false) break;
+        }
+    }
+}
+
 const _varFindRegex = /\@\{\s*#*\s*([^\}]+)\s*\}/gi;
-export function GetVar(file: IFileItem, value: string): string {
-    if (!value) return "";
+function _hasVar(value:string){
     _varFindRegex.lastIndex = 0;
-    if (!_varFindRegex.test(value)) return value;
+    return _varFindRegex.test(value);
+}
+const _fileProps = [
+    'input', 'prefix',
+    'fileName', 'pathType', 'extend', 'path', 'className'
+];
+function _getFilePropVar(file:IFileItem):IFileItem{
+    let newFile = Object.assign({}, file);
+    _eachProp(file, function(item, name){
+        if (_fileProps.indexOf(name) >= 0){
+            newFile[name] = GetVar(file, item, null, true);
+        }
+    });
+    return newFile;
+}
+export function GetVar(file: IFileItem, value: string, logs?:string[], isFileOk?:boolean): string {
+    if (!value) return value;
+    if (!_hasVar(value)) return value;
+    if (!isFileOk) file = _getFilePropVar(file);
     let data = Object.assign({
-        styleType: file.typeInfo.styleType
+        styleType: file.typeInfo.styleType,
+        log(...args:string[]){
+            if (!logs) return '';
+            if (args && args.length > 0){
+                args.forEach(function(item){ logs.push(item); });
+            }
+            return '';
+        }
     }, _varObj, file);
     return SipRender.render(value, data);
+    // return GetVar(file, SipRender.render(value, data), logs);
+
     // _varFindRegex.lastIndex = 0;
     // value = value.replace(_varFindRegex, function (find, name) {
     //     var text = '';
@@ -293,7 +340,7 @@ export const DEFAULT_TMPLS: ITmplItem[] = [{
     "files": [
         {
             "active": true,
-            "className": "@{#fileName}",
+            "className": "@{helper.upperCamel(input)}",
             "fileName": "@{input}",
             "htmlContent": "",
             "importToModue": "",
