@@ -3,10 +3,12 @@ import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, merge } from 'rxjs/operators';
 import { AppComponent } from '../app.component';
-import { CloneTmpl, DEFAULT_TMPLS, GetFileFullName, IFileItem, IGenTypeInfo, ITmplItem, VARS } from '../core/lib';
+import { CloneTmpl, DEFAULT_TMPLS, ITmplItem, VARS } from '../core/lib';
 import { GenerateTmplService } from '../core/services/generate-tmpl.service';
 import { GenerateService } from '../core/services/generate.service';
 import { VscodeMessageService } from '../core/services/vscode-message.service';
+import { IFileItem, IGenTypeInfo } from '../core/base';
+import { SipRenderFile } from '../core/sip-render-file';
 @Component({
   selector: 'sip-generate',
   templateUrl: './generate.component.html',
@@ -55,10 +57,6 @@ export class GenerateComponent implements OnDestroy {
   vars: string = VARS.join(', ');
   editContentType = 0;
 
-  get styleList(): string[] {
-    return this.genSrv.styleList;
-  }
-
   log(p: any) {
     console.log(p);
   }
@@ -96,28 +94,19 @@ export class GenerateComponent implements OnDestroy {
   public set prefix(p: string) {
     this._vsMsg.prefix = p;
   }
+  
+
+  render = new SipRenderFile();
 
   getFileFullName(file: IFileItem) {
     file.input = this.input;
-    return GetFileFullName(file);
+    return this.render.getFileFullPath(file);
   }
 
   activeFice(file: IFileItem) {
     let hasContentType = true;
     switch (this.editContentType) {
       case 1:
-        hasContentType = file.typeInfo.ts;
-        break;
-      case 2:
-        hasContentType = file.typeInfo.spec;
-        break;
-      case 3:
-        hasContentType = file.typeInfo.html;
-        break;
-      case 4:
-        hasContentType = file.typeInfo.style;
-        break;
-      case 5:
         hasContentType = file.typeInfo.extend;
         break;
     }

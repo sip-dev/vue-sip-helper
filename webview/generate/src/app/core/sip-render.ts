@@ -188,7 +188,7 @@ function _compileItem(item: OutItem, outs: string[]) {
     item.parent = null;//断开连接
 }
 
-type Buildtor = (data) => string;
+type Buildtor = ($data:any, $helper?:any) => string;
 
 function _compile(template: string): Buildtor {
     let outs: string[] = [];
@@ -196,13 +196,13 @@ function _compile(template: string): Buildtor {
     _compileItem(root, outs);
     let fn
     try {
-        fn = new Function('_s_i_data_190104', `var _s_i_mainFn_190104 = function(_s_i_data_190104){
-            with(_s_i_data_190104){
+        fn = new Function('$data', '$helper', `var _s_i_mainFn_190104 = function($data, $helper){
+            with($data){
                 return ${_makeComileString(outs)};
             }
         }
         try{
-            return _s_i_mainFn_190104(_s_i_data_190104);
+            return _s_i_mainFn_190104($data || {}, $helper || {});
         } catch(e){
             return '';
         }`);
@@ -223,9 +223,15 @@ export const SipRender = {
         _setCache(template, buildtor);
         return buildtor;
     },
-    render(template: string, data: any): string {
+    render(template: string, data: any, helper?:any): string {
+        if (!SipRender.hasRender(template)) return template;
         let buildtor = SipRender.compile(template);
-        return buildtor(data);
+        return buildtor(data, helper);
+    },
+    /** 是否存在${...} */
+    hasRender:function(template:string):boolean{
+        _itemRegex.lastIndex = 0;
+        return _itemRegex.test(template);
     }
 }
 

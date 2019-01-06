@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { IConfig, ITmplItem, IVscodeOption, SetVarObject } from '../lib';
+import { IConfig, ITmplItem, IVscodeOption } from '../lib';
+import { SipRenderFile } from '../sip-render-file';
 
 declare const vscode: any;
 
@@ -107,16 +108,17 @@ export class VscodeMessageService {
                     (new Function('SipHelper', this.options.helper))({
                         extend: function (obj: any) {
                             helper = obj;
-                            // Object.assign(helper, obj);
                         },
-                        log() {
-                            return helper.log ? helper.log.apply(this, arguments) : '';
+                        log(...args: string[]) {
+                            return SipRenderFile.log(...args);
                         }
                     });
                 }
-                SetVarObject(Object.assign({}, this.options, {
-                    helper: helper
-                }));
+                SipRenderFile.helper = helper;
+                SipRenderFile.extend = Object.assign({}, this.options);
+                // SetVarObject(Object.assign({}, this.options, {
+                //     helper: helper
+                // }));
                 callback();
 
             });
