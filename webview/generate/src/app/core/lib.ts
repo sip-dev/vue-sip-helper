@@ -139,7 +139,7 @@ export function GetFileFullNameList(file: IFileItem): string[] {
     return fileList;
 }
 
-export function GetFileFullList(file: IFileItem, logs?:string[]): { fileName: string, content: string, dir: boolean }[] {
+export function GetFileFullList(file: IFileItem, logs?: string[]): { fileName: string, content: string, dir: boolean }[] {
     let type = file.type;
     let typeInfo = file.typeInfo;
     let fileList = [];
@@ -209,79 +209,60 @@ function _eachProp(obj: any, callback: (item: any, name: string) => void, thisAr
 }
 
 const _varFindRegex = /\@\{\s*#*\s*([^\}]+)\s*\}/gi;
-function _hasVar(value:string){
+function _hasVar(value: string) {
     _varFindRegex.lastIndex = 0;
     return _varFindRegex.test(value);
 }
+
+/** file支持render内容的属性，注意顺序 */
 const _fileProps = [
     'input', 'prefix',
-    'fileName', 'pathType', 'extend', 'path', 'className'
+    'fileName', 'extend', 'path', 'className'
 ];
-function _getFilePropVar(file:IFileItem):IFileItem{
-    let newFile = Object.assign({}, file);
-    _eachProp(file, function(item, name){
-        if (_fileProps.indexOf(name) >= 0){
-            newFile[name] = GetVar(file, item, null, true);
-        }
+
+function _makeFilePropVar(data: IRenderData): void {
+    _fileProps.forEach(function (item) {
+        data[item] = _getVarIn(data, data[item]);
     });
-    return newFile;
 }
-export function GetVar(file: IFileItem, value: string, logs?:string[], isFileOk?:boolean): string {
+
+interface IRenderData extends IFileItem {
+    styleType: string;
+    log: (...args: string[]) => '';
+}
+
+function _getVarIn(data: IRenderData, value: string): string {
     if (!value) return value;
     if (!_hasVar(value)) return value;
-    if (!isFileOk) file = _getFilePropVar(file);
+    return SipRender.render(value, data);
+}
+export function GetVar(file: IFileItem, value: string, logs?: string[]): string {
+    if (!value) return value;
+    if (!_hasVar(value)) return value;
+    let log = function (...args: string[]) {
+        if (!logs) return '';
+        if (args && args.length > 0) {
+            args.forEach(function (item) { logs.push(item); });
+        }
+        return '';
+    };
     let data = Object.assign({
         styleType: file.typeInfo.styleType,
-        log(...args:string[]){
-            if (!logs) return '';
-            if (args && args.length > 0){
-                args.forEach(function(item){ logs.push(item); });
-            }
-            return '';
-        }
+        log: log
     }, _varObj, file);
-    return SipRender.render(value, data);
-    // return GetVar(file, SipRender.render(value, data), logs);
+    data.helper.log = log;
+    _makeFilePropVar(data);
 
-    // _varFindRegex.lastIndex = 0;
-    // value = value.replace(_varFindRegex, function (find, name) {
-    //     var text = '';
-    //     if (name == 'styleType') {
-    //         text = file.typeInfo.styleType;
-    //     } else
-    //         text = GetVarProp(file, name);
-    //     text = GetVar(file, text);
-    //     return find.indexOf('#') >= 0 ? MakePascalCasingName(text) : text;
-    // });
-
-    // return value;
+    return _getVarIn(data, value);
 }
 
 let _pathSplice = '/';
-// function GetVarProp(file: IFileItem, prop: string): string {
-//     let str: string;
-//     if (prop in file)
-//         str = file[prop];
-//     else if (prop in _varObj)
-//         str = _varObj[prop];
-//     return str ? str.replace('{' + prop + '}', '') : '';
-// }
 
 let _varObj: any = {};
 export function SetVarObject(obj: object) {
     _varObj = Object.assign(_varObj, obj);
     _pathSplice = _varObj['isLinux'] ? '/' : '\\';
 };
-
-/**
- * 名称转换：sip-user_list.component ===> SipUserListComponent
- * @param name 
- */
-export function MakePascalCasingName(name: string) {
-    _varFindRegex.lastIndex = 0;
-    if (_varFindRegex.test(name)) return name;
-    return name.replace(/\b(\w)|\s(\w)/g, function (m) { return m.toUpperCase(); }).replace(/[^a-z0-9]/gi, '');
-}
 
 export interface IVscodeOption {
     curPath?: string;
@@ -340,15 +321,16 @@ export const DEFAULT_TMPLS: ITmplItem[] = [{
     "files": [
         {
             "active": true,
-            "className": "@{helper.upperCamel(input)}",
+            "className": "@{helper.upperCamel(fileName)}",
             "fileName": "@{input}",
             "htmlContent": "",
             "importToModue": "",
             "path": "",
             "pathType": "file",
-            "specContent": "import { @{className} } from './@{fileName}';\n\ndescribe('@{className}', () => {\n  it('should create an instance', () => {\n    expect(new @{className}()).toBeTruthy();\n  });\n});\n",
+            "tsContent": "",
+            "specContent": "",
             "styleContent": "",
-            "tsContent": "export class @{className} {\n}\n",
+            "extendContent": "export class @{className} {\n}\n",
             "type": "extend",
             "extend": "ts",
             "typeInfo": {

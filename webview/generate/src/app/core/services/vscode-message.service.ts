@@ -73,8 +73,11 @@ export class VscodeMessageService {
                 fileName: '',
                 workspaceRoot: 'd:\\root',
                 extensionPath: 'd:\\temp\\extension',
-                modules: [],
-                helper: `
+                modules: []
+            }, p);
+            let options = this.options;
+            if (!options.helper) {
+                options.helper = `
 
                 /** 定义helper */
                 var _helper = {
@@ -91,7 +94,7 @@ export class VscodeMessageService {
                 /** 扩展helper */
                 SipHelper.extend(_helper);
 `
-            }, p);
+            }
             this.options.modules = this.options.modules.slice();
             this.readConfig().subscribe((readConfig) => {
                 let config: IConfig = readConfig ? JSON.parse(readConfig) : null;
@@ -99,12 +102,15 @@ export class VscodeMessageService {
                 if (config) {
                     this.options.prefix = config.prefix;
                 }
-                let helper = {};
+                let helper: any = {};
                 if (this.options.helper) {
                     (new Function('SipHelper', this.options.helper))({
                         extend: function (obj: any) {
                             helper = obj;
                             // Object.assign(helper, obj);
+                        },
+                        log() {
+                            return helper.log ? helper.log.apply(this, arguments) : '';
                         }
                     });
                 }

@@ -11,5 +11,10 @@ var _helper = {
     }
 };
 
-/** 扩展helper */
+/**
+ * 扩展helper
+ * SipHelper 提供两个方法：
+ *  1. SipHelper.extend(obj: object)
+ *  2. SipHelper.log(...args: string[])
+ */
 SipHelper.extend(_helper);

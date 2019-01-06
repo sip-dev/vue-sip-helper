@@ -101,7 +101,7 @@
                 <li class="nav-item" *ngIf="curFile.typeInfo.style">
                     <a class="nav-link" [class.active]="editContentType == 4" (click)="editContentType = 4" href="javascript:void(0)">{{curFile.typeInfo.styleType}}</a>
                 </li>
-                <li class="nav-item" *ngIf="curFile.typeInfo.extend">
+                <li class="nav-item" *ngIf="curFile.typeInfo.extend && curFile.pathType != 'dir'">
                     <a class="nav-link" [class.active]="editContentType == 5" (click)="editContentType = 5" href="javascript:void(0)">内容</a>
                 </li>
             </ul>
@@ -127,7 +127,7 @@
                             <label class="col-form-label">path：</label>
                             <input type="input" class="form-control" name="filePath" [(ngModel)]="curFile.path" [ngModelOptions]="{updateOn: 'blur'}">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" *ngIf="curFile.pathType != 'dir'">
                             <label class="col-form-label">className：</label>
                             <input type="input" class="form-control" name="className" [(ngModel)]="curFile.className" [ngModelOptions]="{updateOn: 'blur'}">
                         </div>

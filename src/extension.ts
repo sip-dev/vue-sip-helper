@@ -31,7 +31,6 @@ export interface IParam {
 
 export interface IConfig {
     prefix: string;
-    commands: IConfigCommand[];
     templates: any[];
 }
 
@@ -160,7 +159,7 @@ export function activate(context: ExtensionContext) {
 
         _calcRootPath(curPath);
 
-        let configs = getConfig().commands;
+        let configs = _commands;
 
         showQuickPick(configs, _getRootPath(), args);
 
@@ -403,6 +402,12 @@ export function activate(context: ExtensionContext) {
         let fsDefaultConfig = fs.readFileSync(path.join(context.extensionPath, 'default.config.json'), 'utf-8');
         return (!fs.existsSync(fsPath)) ? jsonic(fsDefaultConfig) : jsonic(fs.readFileSync(fsPath, 'utf-8'));
     };
+
+    let getCommands = (): IConfigCommand[] => {
+        let fsPath = fs.readFileSync(path.join(context.extensionPath, 'commands.config.json'), 'utf-8');
+        return jsonic(fsPath);
+    };
+    let _commands = getCommands();
 
     let setConfig = () => {
         saveDefaultConfig();
