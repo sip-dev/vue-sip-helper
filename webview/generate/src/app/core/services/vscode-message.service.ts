@@ -96,16 +96,16 @@ export class VscodeMessageService {
                 SipHelper.extend(_helper);
 `
             }
-            this.options.modules = this.options.modules.slice();
+            options.modules = options.modules.slice();
             this.readConfig().subscribe((readConfig) => {
                 let config: IConfig = readConfig ? JSON.parse(readConfig) : null;
                 this.config = config;
                 if (config) {
-                    this.options.prefix = config.prefix;
+                    options.prefix = config.prefix;
                 }
                 let helper: any = {};
-                if (this.options.helper) {
-                    (new Function('SipHelper', this.options.helper))({
+                if (options.helper) {
+                    (new Function('SipHelper', options.helper))({
                         extend: function (obj: any) {
                             helper = obj;
                         },
@@ -115,10 +115,8 @@ export class VscodeMessageService {
                     });
                 }
                 SipRenderFile.helper = helper;
-                SipRenderFile.extend = Object.assign({}, this.options);
-                // SetVarObject(Object.assign({}, this.options, {
-                //     helper: helper
-                // }));
+                delete options.helper;
+                SipRenderFile.extend = Object.assign({}, options);
                 callback();
 
             });

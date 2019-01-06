@@ -693,6 +693,7 @@ ${props.join('\n')}
                         isDir: isDir,
                         isLinux: isLinux,
                         input: input,
+                        tmplName: generateOpt ? generateOpt.tmpl : '',
                         prefix: 'app',
                         fileName: isDir ? '' : fileName,
                         workspaceRoot: workspaceRoot,

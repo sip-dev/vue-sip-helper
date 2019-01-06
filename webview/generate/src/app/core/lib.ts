@@ -30,7 +30,7 @@ export const TYPES: IGenType = {
 // ];
 
 export const VARS = [
-    'input', 'prefix',
+    'input', 'prefix', 'isDir', 'isLinux', 'tmplName',
     'fileName', 'pathType', 'extend', 'path', 'className',
     'curPath', 'curFile', 'workspaceRoot', '$data', '$helper'
 ];

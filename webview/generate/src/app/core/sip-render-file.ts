@@ -38,10 +38,11 @@ export class SipRenderFile {
         return _logs;
     }
 
-    renderFile(file: IFileItem, notConent?: boolean): { fileName: string, content: string, dir: boolean, logs: string[] } {
+    renderFile(file: IFileItem, notConent?: boolean, tmplTitle?:string): { fileName: string, content: string, dir: boolean, logs: string[] } {
         _logs = [];
 
         let data = Object.assign({}, SipRenderFile.extend, file);
+        if (tmplTitle) data.tmplName = tmplTitle;
 
         _makeFilePropVar(data);
 
@@ -55,8 +56,8 @@ export class SipRenderFile {
         return ret;
     }
 
-    getFileFullPath(file: IFileItem) {
-        let info = this.renderFile(file, true);
+    getFileFullPath(file: IFileItem, tmplTitle:string) {
+        let info = this.renderFile(file, true, tmplTitle);
 
         let fileName = info.fileName;
         return info.dir ? fileName : [fileName, file.extend].join('.');

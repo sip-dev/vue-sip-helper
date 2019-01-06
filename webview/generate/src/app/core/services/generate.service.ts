@@ -108,7 +108,7 @@ export class GenerateService {
         });
     }
 
-    render = new SipRenderFile();
+    private render = new SipRenderFile();
     genReports: string[] = [];
     generating = 0;
     generateFirstFile:string;
@@ -134,7 +134,7 @@ export class GenerateService {
         this.files.forEach((file) => {
             file = CloneFile(file);
             file.input = input;
-            saveList.push(this.render.renderFile(file));
+            saveList.push(this.render.renderFile(file, false, this.curEditTmplTitle));
         });
         let count = 0;
         saveList.forEach((file) => {

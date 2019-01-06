@@ -100,7 +100,7 @@ export class GenerateComponent implements OnDestroy {
 
   getFileFullName(file: IFileItem) {
     file.input = this.input;
-    return this.render.getFileFullPath(file);
+    return this.render.getFileFullPath(file, this.curEditTmplTitle);
   }
 
   activeFice(file: IFileItem) {
