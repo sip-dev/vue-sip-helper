@@ -204,7 +204,7 @@ function _compile(template: string): Buildtor {
         try{
             return _s_i_mainFn_190104($data || {}, $helper || {});
         } catch(e){
-            return '';
+            return e.toString();
         }`);
 
     } catch (e) {
