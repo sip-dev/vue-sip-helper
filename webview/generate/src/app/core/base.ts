@@ -38,35 +38,29 @@ export interface IGenType {
     [key: string]: IGenTypeInfo;
 }
 
-
+/** 插件传过来的参数 */
 export interface IVscodeOption {
     curPath?: string;
     curFile?: string;
     isDir?: boolean;
     isLinux?: boolean;
     input?: string;
+    tmplName?:string;
     prefix?: string;
     fileName?: string;
     workspaceRoot?: string;
     extensionPath?: string;
     modules: string[];
-    generate?: { input: string; tmpl: string; };
+    generate?: {
+        /** 输入内容 */
+        input: string;
+        /** 模板名称 */
+        tmpl: string;
+    };
     helper?: string;
 }
 
-export interface ITmplItem {
-    title: string;
-    index?: number;
-    active?: boolean;
-    files: IFileItem[];
-}
-
-export interface IConfig {
-    prefix?: string;
-    templates?: ITmplItem[];
-}
-
-
+/** 输入 */
 export interface InputItem {
     name: string;
     title?: string;
@@ -76,4 +70,19 @@ export interface InputItem {
     /** 数据源， [{value:'', text:''}] */
     source?: any;
     uiType?: 'input' | 'texteare' | 'select' | 'boolean';
+}
+
+/** 模板 */
+export interface ITmplItem {
+    title: string;
+    index?: number;
+    active?: boolean;
+    files: IFileItem[];
+    inputs?:InputItem[];
+}
+
+/** 保存模板配置 */
+export interface IConfig {
+    prefix?: string;
+    templates?: ITmplItem[];
 }

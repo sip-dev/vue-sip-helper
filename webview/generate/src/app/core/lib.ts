@@ -105,5 +105,6 @@ export const DEFAULT_TMPLS: ITmplItem[] = [{
             }
         }
     ],
+    "inputs":[],
     "title": "class"
 }];

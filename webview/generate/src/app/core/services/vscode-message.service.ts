@@ -103,6 +103,7 @@ export class VscodeMessageService {
                 if (config) {
                     options.prefix = config.prefix;
                 }
+
                 let helper: any = {};
                 if (options.helper) {
                     (new Function('SipHelper', options.helper))({
@@ -115,8 +116,12 @@ export class VscodeMessageService {
                     });
                 }
                 SipRenderFile.helper = helper;
-                delete options.helper;
-                SipRenderFile.extend = Object.assign({}, options);
+
+                let _extendField = ['curPath', 'curFile', 'isDir', 'input', 'prefix', 'tmplName', 'workspaceRoot'];
+                let renderExtend = SipRenderFile.extend;
+                _extendField.forEach(function (key) {
+                    renderExtend[key] = options[key];
+                });
                 callback();
 
             });
