@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { AppComponent } from '../app.component';
-import { ITmplItem } from '../core/lib';
+import { ITmplItem } from '../core/base';
 import { GenerateTmplService } from '../core/services/generate-tmpl.service';
 import { GenerateService } from '../core/services/generate.service';
 import { VscodeMessageService } from '../core/services/vscode-message.service';

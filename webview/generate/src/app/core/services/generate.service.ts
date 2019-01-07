@@ -1,9 +1,9 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { CloneFile, GetDefaultFile, ITmplItem, TYPES } from '../lib';
+import { IFileItem, IGenTypeInfo, ITmplItem } from '../base';
+import { CloneFile, GetDefaultFile, TYPES } from '../lib';
+import { SipRenderFile } from '../sip-render-file';
 import { GenerateTmplService } from './generate-tmpl.service';
 import { VscodeMessageService } from './vscode-message.service';
-import { IFileItem, IGenTypeInfo } from '../base';
-import { SipRenderFile } from '../sip-render-file';
 
 @Injectable()
 export class GenerateService {

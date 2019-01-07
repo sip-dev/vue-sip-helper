@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { CloneTmpl, GetDefaultTmpl, ITmplItem, MakeTmplIndex } from '../lib';
+import { ITmplItem } from '../base';
+import { CloneTmpl, GetDefaultTmpl, MakeTmplIndex } from '../lib';
 import { VscodeMessageService } from './vscode-message.service';
 
 @Injectable()

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IVscodeOption } from '../core/lib';
+import { IVscodeOption } from '../core/base';
 import { GenerateTmplService } from '../core/services/generate-tmpl.service';
 import { GenerateService } from '../core/services/generate.service';
 import { VscodeMessageService } from '../core/services/vscode-message.service';

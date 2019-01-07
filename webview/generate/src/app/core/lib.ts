@@ -1,4 +1,4 @@
-import { IFileItem, IGenType } from "./base";
+import { IFileItem, IGenType, ITmplItem } from "./base";
 
 // export const TYPES: IGenType = {
 //     'module': {
@@ -62,32 +62,6 @@ export function JoinPath(path: string, fileName: string): string {
 
 let _pathSplice = '/';
 
-export interface IVscodeOption {
-    curPath?: string;
-    curFile?: string;
-    isDir?: boolean;
-    isLinux?: boolean;
-    input?: string;
-    prefix?: string;
-    fileName?: string;
-    workspaceRoot?: string;
-    extensionPath?: string;
-    modules: string[];
-    generate?: { input: string; tmpl: string; };
-    helper?: string;
-}
-
-export interface ITmplItem {
-    title: string;
-    index?: number;
-    active?: boolean;
-    files: IFileItem[];
-}
-
-export interface IConfig {
-    prefix?: string;
-    templates?: ITmplItem[];
-}
 
 export function GetDefaultTmpl(): ITmplItem {
     return { title: '', active: false, files: [] };

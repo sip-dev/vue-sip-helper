@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IVscodeOption } from './core/lib';
+import { IVscodeOption } from './core/base';
 import { VscodeMessageService } from './core/services/vscode-message.service';
 
 @Component({

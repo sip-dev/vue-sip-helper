@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { IConfig, ITmplItem, IVscodeOption } from '../lib';
+import { IConfig, ITmplItem, IVscodeOption } from '../base';
 import { SipRenderFile } from '../sip-render-file';
 
 declare const vscode: any;

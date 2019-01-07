@@ -3,11 +3,11 @@ import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, merge } from 'rxjs/operators';
 import { AppComponent } from '../app.component';
-import { CloneTmpl, DEFAULT_TMPLS, ITmplItem, VARS } from '../core/lib';
+import { IFileItem, IGenTypeInfo, ITmplItem } from '../core/base';
+import { CloneTmpl, DEFAULT_TMPLS, VARS } from '../core/lib';
 import { GenerateTmplService } from '../core/services/generate-tmpl.service';
 import { GenerateService } from '../core/services/generate.service';
 import { VscodeMessageService } from '../core/services/vscode-message.service';
-import { IFileItem, IGenTypeInfo } from '../core/base';
 import { SipRenderFile } from '../core/sip-render-file';
 @Component({
   selector: 'sip-generate',

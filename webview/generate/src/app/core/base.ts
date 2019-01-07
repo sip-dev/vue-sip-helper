@@ -37,3 +37,43 @@ export interface IGenTypeInfo {
 export interface IGenType {
     [key: string]: IGenTypeInfo;
 }
+
+
+export interface IVscodeOption {
+    curPath?: string;
+    curFile?: string;
+    isDir?: boolean;
+    isLinux?: boolean;
+    input?: string;
+    prefix?: string;
+    fileName?: string;
+    workspaceRoot?: string;
+    extensionPath?: string;
+    modules: string[];
+    generate?: { input: string; tmpl: string; };
+    helper?: string;
+}
+
+export interface ITmplItem {
+    title: string;
+    index?: number;
+    active?: boolean;
+    files: IFileItem[];
+}
+
+export interface IConfig {
+    prefix?: string;
+    templates?: ITmplItem[];
+}
+
+
+export interface InputItem {
+    name: string;
+    title?: string;
+    defaultValue?: any;
+    desc?: string;
+    readonly?: boolean;
+    /** 数据源， [{value:'', text:''}] */
+    source?: any;
+    uiType?: 'input' | 'texteare' | 'select' | 'boolean';
+}
